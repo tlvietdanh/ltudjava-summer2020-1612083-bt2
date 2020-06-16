@@ -3,6 +3,7 @@ package dao;
 import model.AccountsEntity;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import javax.xml.bind.DatatypeConverter;
@@ -12,16 +13,28 @@ import java.util.List;
 
 public class AccountsDao {
 
+    public static Session accountSession;
+
     public AccountsDao() {
         // create giao vu va student admin
-        createAccount("giaovu", "giaovu", 1);
-        createAccount("1842001", "1842001", 0);
+        // createAccount("giaovu", "giaovu", 1);
+        // createAccount("1842001", "1842001", 0);
     }
 
-    public boolean createAccount(String username, String password, int userType) {
-        if(username.length() == 0 || username.length() == 0 || checkExistedUsername(username)) {
-            return false;
+    public static int createAccount(String username, String password, int userType) {
+        if(username.length() == 0 || username.length() == 0) {
+            return 0;
         }
+        accountSession = HibernateUtil.getSessionFactory().openSession();
+
+        String hql = "FROM AccountsEntity a Where a.username= '" + username + "'";
+        Query query = accountSession.createQuery(hql);
+
+        if(query.getResultList().size() > 0) {
+            System.out.println("Tai khoan da ton tai!");
+            return 0;
+        }
+
         //create account instance
         AccountsEntity accounts = new AccountsEntity();
         accounts.setUsername(username);
@@ -29,28 +42,28 @@ public class AccountsDao {
         accounts.setUsertype(userType);
 
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
             accounts.setPassword(hashMD5Password(accounts.getPassword()));
-            transaction = session.beginTransaction();
+            transaction = accountSession.beginTransaction();
 
-            session.save(accounts);
+            accountSession.save(accounts);
 
             transaction.commit();
             System.out.println("Created Account " + username);
-            return true;
+            accountSession.close();
+            return 1;
         }catch (Exception e) {
-            if(transaction != null) {
-                transaction.rollback();
-            }
             e.printStackTrace();
         }
-        return false;
+        accountSession.close();
+        return 0;
     }
 
     private static List<AccountsEntity > getAccounts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-
-            return session.createQuery("from AccountsEntity ", AccountsEntity.class).list();
+            List result = session.createQuery("from AccountsEntity ", AccountsEntity.class).list();
+            session.close();
+            return result;
         }
     }
 
@@ -75,15 +88,15 @@ public class AccountsDao {
         return false;
     }
 
-    private boolean checkExistedUsername(String username) {
-        List<AccountsEntity> accounts = getAccounts();
-
-        for (int i = 0; i < accounts.size(); i++) {
-            AccountsEntity a = accounts.get(i);
-            if(username.equals(a.getUsername())) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public static int checkExistedUsername(String username) {
+//        List<AccountsEntity> accounts = getAccounts();
+//
+//        for (int i = 0; i < accounts.size(); i++) {
+//            AccountsEntity a = accounts.get(i);
+//            if(username.equals(a.getUsername())) {
+//                return a.getAccountId();
+//            }
+//        }
+//        return -1;
+//    }
 }

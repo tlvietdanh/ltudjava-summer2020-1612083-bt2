@@ -15,20 +15,32 @@ public class App
 {
     public static void main( String[] args )
     {
+        AccountsDao accountsDao = new AccountsDao();
+        // login();
+        String choose = "";
+        while (choose != "exit") {
 
-        login();
 
-        System.out.printf( "Chon: " );
+            System.out.printf("Chon: ");
 
-        Scanner sc = new Scanner(System.in);
+            Scanner sc = new Scanner(System.in);
 
-        String choose = sc.nextLine();
+            choose = sc.nextLine();
 
-        switch (choose) {
-            case "1":
-                System.out.println("Them Sinh Vien");
-
+            switch (choose) {
+                case "1":
+                    System.out.println("Them Sinh Vien");
+                    addStudent();
+                    break;
+                case "2":
+                    System.out.println("Import danh sach lop");
+                    importClass();
+                    break;
+                default:
+                    break;
+            }
         }
+
 
     }
 
@@ -56,5 +68,29 @@ public class App
             login();
             e.printStackTrace();
         }
+    }
+
+    public static void addStudent() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Nhap mssv: ");
+
+        String mssv = sc.nextLine();
+
+        System.out.printf("Nhap ho va ten: ");
+
+        String name = sc.nextLine();
+
+        System.out.printf("Nhap cmnd: ");
+
+        String id = sc.nextLine();
+        StudentsDao s = new StudentsDao();
+        // s.createStudent(mssv, name, 0, id);
+
+    }
+
+    public static void importClass() {
+        ClassesDao classesDao = new ClassesDao();
+
+        classesDao.importClasses("D:\\javaproject\\ltudjava-summer2020-1612083-bt2\\src\\danhsachlop.csv", ",");
     }
 }
