@@ -1,12 +1,16 @@
 package dao;
 
 import model.ClassesEntity;
+import model.SpecialstudentsEntity;
+import model.StudentsEntity;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.io.*;
+import java.util.Collections;
 import java.util.List;
 
 public class ClassesDao {
@@ -105,15 +109,65 @@ public class ClassesDao {
             System.out.println("Ma loi ko hop le");
             return false;
         }
+        classesSession = HibernateUtil.getSessionFactory().openSession();
         try{
-            classesSession = HibernateUtil.getSessionFactory().openSession();
-            String hql = "SELECT * FROM ClassesEntity c left join StudentsEntity s on c.studentId=s.studentId WHERE c.classId='" + classID + "'";
+            String hql = "SELECT s FROM ClassesEntity c left join StudentsEntity s on c.studentId=s.studentId WHERE c.classId='" + classID + "'";
             Query query = classesSession.createQuery(hql);
-            List result = query.getResultList();
+            List<StudentsEntity> listStudent = query.getResultList();
+            // result here
+            Collections.sort(listStudent, (s1, s2) -> {
+                return s1.getStudentId().compareTo(s2.getStudentId());
+            });
+            // result here
+            for (int i = 0; i < listStudent.size(); i++) {
+                System.out.println(listStudent.get(i).getStudentId());
+            }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
+        classesSession.close();
 
+        return true;
+    }
+
+    public boolean danhsachmon(String classID, String subject) {
+        if(classID.length() == 0) {
+            System.out.println("Ma loi ko hop le");
+            return false;
+        }
+        classesSession = HibernateUtil.getSessionFactory().openSession();
+        try{
+
+            // lay  danh  sach hoc sinh
+            String getListStudent = "Select s from ClassesEntity c,  StudentsEntity s where s.studentId=c.studentId  and  c.classId='"+classID+"'";
+            Query query = classesSession.createQuery(getListStudent);
+            List<StudentsEntity> listStudent = query.getResultList();
+
+            //  lay  danh  sach  xin  hoc lai
+            String getListSpecialStudents = "Select s from SpecialstudentsEntity p,  StudentsEntity s where p.subjectId='"+subject+"' and p.type=1  and s.studentId = p.studentId";
+            query = classesSession.createQuery(getListSpecialStudents);
+            List<StudentsEntity> listAddSub = query.getResultList();
+
+            //  lay  danh  sach  xin  huy mon
+            String getListRemoveSbject = "Select s from SpecialstudentsEntity p,  StudentsEntity s where p.subjectId='"+subject+"' and p.type=-1  and s.studentId = p.studentId";
+            query = classesSession.createQuery(getListRemoveSbject);
+            List<StudentsEntity> listRemoveSub = query.getResultList();
+
+
+            listStudent.addAll(listAddSub);
+            listStudent.removeAll(listRemoveSub);
+            Collections.sort(listStudent, (s1, s2) -> {
+                return s1.getStudentId().compareTo(s2.getStudentId());
+            });
+            // result here
+            for (int i = 0; i < listStudent.size(); i++) {
+                System.out.println(listStudent.get(i).getStudentId());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        classesSession.close();
 
         return true;
     }

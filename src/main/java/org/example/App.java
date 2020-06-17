@@ -41,12 +41,22 @@ public class App
                     importSchedules();
                     break;
                 case "4":
-                    System.out.println("Xin hoc lai");
+                    System.out.println("Xin bo mon");
                     requestSpecial(-1);
                     break;
                 case "5":
                     System.out.println("Xin hoc lai");
                     requestSpecial(1);
+                    break;
+                case "6":
+                    ClassesDao s = new ClassesDao();
+                    s.danhsachlop("17HCB");
+                    break;
+                case "7":
+                    ClassesDao s1 = new ClassesDao();
+                    s1.danhsachmon("18HCB", "CTT001");
+                    break;
+                case "8":
                     break;
                 default:
                     break;
