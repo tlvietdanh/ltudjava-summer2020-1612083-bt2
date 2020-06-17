@@ -5,22 +5,22 @@ import javax.persistence.*;
 @Entity
 @Table(name = "subjects", schema = "1612083_hibernate", catalog = "")
 public class SubjectsEntity {
-    private int subjectId;
+    private String subjectId;
     private String name;
     private String room;
 
     @Id
-    @Column(name = "subjectID", nullable = false)
-    public int getSubjectId() {
+    @Column(name = "subjectID")
+    public String getSubjectId() {
         return subjectId;
     }
 
-    public void setSubjectId(int subjectId) {
+    public void setSubjectId(String subjectId) {
         this.subjectId = subjectId;
     }
 
     @Basic
-    @Column(name = "name", nullable = true, length = 256)
+    @Column(name = "name")
     public String getName() {
         return name;
     }
@@ -30,7 +30,7 @@ public class SubjectsEntity {
     }
 
     @Basic
-    @Column(name = "room", nullable = true, length = 256)
+    @Column(name = "room")
     public String getRoom() {
         return room;
     }
@@ -46,7 +46,7 @@ public class SubjectsEntity {
 
         SubjectsEntity that = (SubjectsEntity) o;
 
-        if (subjectId != that.subjectId) return false;
+        if (subjectId != null ? !subjectId.equals(that.subjectId) : that.subjectId != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (room != null ? !room.equals(that.room) : that.room != null) return false;
 
@@ -55,7 +55,7 @@ public class SubjectsEntity {
 
     @Override
     public int hashCode() {
-        int result = subjectId;
+        int result = subjectId != null ? subjectId.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (room != null ? room.hashCode() : 0);
         return result;

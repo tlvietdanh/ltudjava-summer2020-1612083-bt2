@@ -18,9 +18,11 @@
     <property name="hibernate.hbm2ddl.auto">update</property>
 
     <mapping class="model.AccountsEntity"/>
-      <mapping class="model.ClassesEntity"/>
-      <mapping class="model.StudentsEntity"/>
+    <mapping class="model.ClassesEntity"/>
+    <mapping class="model.StudentsEntity"/>
     <mapping class="model.SubjectsEntity"/>
+    <mapping class="model.SchedulesEntity"/>
+    <mapping class="model.SpecialstudentsEntity"/>
 
 
     <!-- DB schema will be updated if needed -->

@@ -1,9 +1,6 @@
 package util;
 
-import model.AccountsEntity;
-import model.ClassesEntity;
-import model.StudentsEntity;
-import model.SubjectsEntity;
+import model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -29,6 +26,10 @@ public class HibernateUtil {
         configuration.addAnnotatedClass(ClassesEntity.class);
         configuration.addAnnotatedClass(StudentsEntity.class);
         configuration.addAnnotatedClass(SubjectsEntity.class);
+        configuration.addAnnotatedClass(SchedulesEntity.class);
+        configuration.addAnnotatedClass(SpecialstudentsEntity.class);
+
+
 
         ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties()).build();

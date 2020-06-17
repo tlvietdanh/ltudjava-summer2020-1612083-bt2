@@ -13,7 +13,6 @@ public class StudentsDao {
 
     public static Session studentSession;
 
-
     public static boolean createStudent(String mssv, String name, int gender, String identyfy) {
         if(mssv.length() == 0) {
             return false;
@@ -69,12 +68,4 @@ public class StudentsDao {
         return false;
     }
 
-    private static List<StudentsEntity> getStudents() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-
-            List result = session.createQuery("from StudentsEntity ", StudentsEntity.class).list();
-            session.close();
-            return result;
-        }
-    }
 }

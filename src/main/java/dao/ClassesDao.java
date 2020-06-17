@@ -17,8 +17,6 @@ public class ClassesDao {
         if( fileName.length() == 0) {
             return false;
         }
-        Transaction transaction = null;
-
 
         File csvFile = new File(fileName);
         if (csvFile.isFile()) {
@@ -44,20 +42,8 @@ public class ClassesDao {
                         row = bufferedReader.readLine();
                         continue;
                     }
-
-                    classesSession = HibernateUtil.getSessionFactory().openSession();
-                    // create student if not exists
-                    StudentsDao.createStudent(mssv, name, gender.equals("Nam") ? 0 : 1, id);
-                    // create classes
-                    ClassesEntity classes = new ClassesEntity();
-                    classes.setClassId(classID);
-                    classes.setStudentId(mssv);
-
-                    transaction = classesSession.beginTransaction();
-                    classesSession.save(classes);
-                    transaction.commit();
+                    addStudentToClass(mssv, name, gender.equals("Nam") ? 1 : 0, id, classID);
                     row = bufferedReader.readLine();
-                    classesSession.close();
                 }
                 System.out.println("Import thanh cong!!!");
                 return true;
@@ -82,12 +68,53 @@ public class ClassesDao {
         return false;
     }
 
-    private static List<ClassesEntity> getClasses() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-
-            List result = session.createQuery("from ClassesEntity ", ClassesEntity.class).list();
-            session.close();
-            return result;
+    public boolean addStudentToClass(String mssv, String name, int gender, String id, String classID) {
+        if(mssv.length() == 0 || classID.length() == 0) {
+            return false;
         }
+        try {
+            classesSession = HibernateUtil.getSessionFactory().openSession();
+
+            Transaction transaction = null;
+
+            // create student if not exists
+            StudentsDao.createStudent(mssv, name, gender, id);
+            // create classes
+            String hql = "FROM ClassesEntity c WHERE c.classId='"+classID+"' and c.studentId='"+mssv+"'";
+            Query query = classesSession.createQuery(hql);
+            if(query.getResultList().size() > 0) {
+                return false;
+            }
+
+            ClassesEntity classes = new ClassesEntity();
+            classes.setClassId(classID);
+            classes.setStudentId(mssv);
+
+            transaction = classesSession.beginTransaction();
+            classesSession.save(classes);
+            transaction.commit();
+            classesSession.close();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean danhsachlop(String classID) {
+        if(classID.length() == 0) {
+            System.out.println("Ma loi ko hop le");
+            return false;
+        }
+        try{
+            classesSession = HibernateUtil.getSessionFactory().openSession();
+            String hql = "SELECT * FROM ClassesEntity c left join StudentsEntity s on c.studentId=s.studentId WHERE c.classId='" + classID + "'";
+            Query query = classesSession.createQuery(hql);
+            List result = query.getResultList();
+        } catch (Exception e) {
+
+        }
+
+
+        return true;
     }
 }

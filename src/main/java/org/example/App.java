@@ -36,6 +36,18 @@ public class App
                     System.out.println("Import danh sach lop");
                     importClass();
                     break;
+                case "3":
+                    System.out.println("Import thoi khoa bieu");
+                    importSchedules();
+                    break;
+                case "4":
+                    System.out.println("Xin hoc lai");
+                    requestSpecial(-1);
+                    break;
+                case "5":
+                    System.out.println("Xin hoc lai");
+                    requestSpecial(1);
+                    break;
                 default:
                     break;
             }
@@ -93,4 +105,30 @@ public class App
 
         classesDao.importClasses("D:\\javaproject\\ltudjava-summer2020-1612083-bt2\\src\\danhsachlop.csv", ",");
     }
+
+    public static void importSchedules() {
+        SchedulesDao schedulesDao = new SchedulesDao();
+
+        schedulesDao.importClasses("D:\\javaproject\\ltudjava-summer2020-1612083-bt2\\src\\thoikhoabieu.csv", ",");
+    }
+
+    public static void requestSpecial(int type) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Nhap mssv: ");
+
+        String mssv = sc.nextLine();
+
+        System.out.printf("Nhap class: ");
+
+        String classID = sc.nextLine();
+
+        System.out.printf("Nhap ma mon: ");
+
+        String subject = sc.nextLine();
+
+
+        SpecialStudentDao s = new SpecialStudentDao();
+        s.requestStudyAgains(mssv, classID, subject, type);
+    }
+
 }
