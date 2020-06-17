@@ -1,19 +1,23 @@
 package dao;
 
 import model.ClassesEntity;
+import model.ScoresEntity;
 import model.SpecialstudentsEntity;
 import model.StudentsEntity;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.mapping.Array;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public class ClassesDao {
+public class ClassesDao<T> {
 
     public static Session classesSession;
 
@@ -130,10 +134,10 @@ public class ClassesDao {
         return true;
     }
 
-    public boolean danhsachmon(String classID, String subject) {
-        if(classID.length() == 0) {
+    public List<StudentsEntity> danhsachmon(String classID, String subject) {
+        if(classID.length() == 0 || subject.length() == 0) {
             System.out.println("Ma loi ko hop le");
-            return false;
+            return null;
         }
         classesSession = HibernateUtil.getSessionFactory().openSession();
         try{
@@ -163,12 +167,50 @@ public class ClassesDao {
             for (int i = 0; i < listStudent.size(); i++) {
                 System.out.println(listStudent.get(i).getStudentId());
             }
+            classesSession.close();
+            return listStudent;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         classesSession.close();
 
-        return true;
+        return null;
     }
+
+    public boolean xembangdiem(String classID, String subjectID) {
+        if(classID.length() == 0 || subjectID.length() == 0) {
+            System.out.println("Ma loi ko hop le");
+            return false;
+        }
+        classesSession = HibernateUtil.getSessionFactory().openSession();
+        try{
+
+            // lay  danh  sach hoc sinh
+            String getListStudent = "Select c, s.name from ScoresEntity c,  StudentsEntity s where s.studentId=c.studentId  and  c.classId='"+classID+"' and c.subjectId='" + subjectID + "' order by s.studentId";
+            Query query = classesSession.createQuery(getListStudent);
+            List listScore = query.getResultList();
+
+
+            Iterator itr = listScore.iterator();
+            while(itr.hasNext()){
+                Object[] obj = (Object[]) itr.next();
+                ScoresEntity score = (ScoresEntity) obj[0];
+                String name = (String) obj[1];
+                System.out.println(score.getStudentId() + "  " + name + "  " + score.getMidTermScore() + "  " + score.getEndTermScore() + "  " + score.getOtherScore() + "  " + score.getTotalScore());
+            }
+
+            classesSession.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        classesSession.close();
+
+        return false;
+    }
+
+
+
 }

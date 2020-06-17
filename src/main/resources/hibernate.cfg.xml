@@ -23,8 +23,9 @@
     <mapping class="model.SubjectsEntity"/>
     <mapping class="model.SchedulesEntity"/>
     <mapping class="model.SpecialstudentsEntity"/>
+    <mapping class="model.ScoresEntity"/>
 
 
-    <!-- DB schema will be updated if needed -->
+      <!-- DB schema will be updated if needed -->
   </session-factory>
 </hibernate-configuration>

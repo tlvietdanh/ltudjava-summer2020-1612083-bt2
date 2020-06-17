@@ -88,15 +88,17 @@ public class AccountsDao {
         return false;
     }
 
-//    public static int checkExistedUsername(String username) {
-//        List<AccountsEntity> accounts = getAccounts();
-//
-//        for (int i = 0; i < accounts.size(); i++) {
-//            AccountsEntity a = accounts.get(i);
-//            if(username.equals(a.getUsername())) {
-//                return a.getAccountId();
-//            }
-//        }
-//        return -1;
-//    }
+    public static boolean changePassword(String oldPassword, String newPassword) {
+        try {
+            accountSession = HibernateUtil.getSessionFactory().openSession();
+
+            String hashOldPass = hashMD5Password(oldPassword);
+            String hql = "SELECT a from AccountsEntity a WHERE a.password=''";
+            Query query = accountSession.createQuery(hql);
+
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
 }

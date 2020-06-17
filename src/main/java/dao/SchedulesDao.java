@@ -2,17 +2,21 @@ package dao;
 
 import model.ClassesEntity;
 import model.SchedulesEntity;
+import model.StudentsEntity;
+import model.SubjectsEntity;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.io.*;
+import java.util.Collections;
+import java.util.List;
 
 public class SchedulesDao {
     public static Session scheduleSession;
 
-    public boolean importClasses(String fileName, String delimeter) {
+    public boolean importSchedule(String fileName, String delimeter) {
         if( fileName.length() == 0) {
             return false;
         }
@@ -96,5 +100,31 @@ public class SchedulesDao {
             return false;
         }
         return true;
+    }
+
+    public  static void getSchedule(String classID)  {
+        if(classID.length() == 0) {
+            System.out.println("Ma loi ko hop le");
+            return;
+        }
+        scheduleSession = HibernateUtil.getSessionFactory().openSession();
+        try{
+            String hql = "SELECT s FROM SchedulesEntity c, SubjectsEntity s  WHERE c.classId='" + classID + "' and c.subjectId=s.subjectId";
+            Query query = scheduleSession.createQuery(hql);
+            List<SubjectsEntity> schedule = query.getResultList();
+            // result here
+            Collections.sort(schedule, (s1, s2) -> {
+                return s1.getSubjectId().compareTo(s2.getSubjectId());
+            });
+            // result here
+            for (int i = 0; i < schedule.size(); i++) {
+                System.out.println(schedule.get(i).getSubjectId() +  "  "  +  schedule.get(i).getName()  +  "  "  +  schedule.get(i).getRoom());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        scheduleSession.close();
+
+        return;
     }
 }

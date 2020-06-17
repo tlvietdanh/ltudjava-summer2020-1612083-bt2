@@ -57,6 +57,23 @@ public class App
                     s1.danhsachmon("18HCB", "CTT001");
                     break;
                 case "8":
+                    SchedulesDao.getSchedule("18HCB");
+                    break;
+                case "9":
+                    ScoreDao score = new ScoreDao();
+                    score.importTranscript("D:\\javaproject\\ltudjava-summer2020-1612083-bt2\\src\\bangdiem.csv", ",");
+                    break;
+                case "10":
+                    ClassesDao s2 = new ClassesDao();
+                    s2.xembangdiem("18HCB", "CTT001");
+                    break;
+                case "11":
+                    ScoreDao scoreDao = new ScoreDao();
+                    scoreDao.editScore("1742005", "18HCB", "CTT001", 9,9,9, 9);
+                    break;
+                case "12":
+                    ScoreDao s3 = new ScoreDao();
+                    s3.xemdiem("18HCB", "CTT001", "1742005");
                     break;
                 default:
                     break;
@@ -119,7 +136,7 @@ public class App
     public static void importSchedules() {
         SchedulesDao schedulesDao = new SchedulesDao();
 
-        schedulesDao.importClasses("D:\\javaproject\\ltudjava-summer2020-1612083-bt2\\src\\thoikhoabieu.csv", ",");
+        schedulesDao.importSchedule("D:\\javaproject\\ltudjava-summer2020-1612083-bt2\\src\\thoikhoabieu.csv", ",");
     }
 
     public static void requestSpecial(int type) {
