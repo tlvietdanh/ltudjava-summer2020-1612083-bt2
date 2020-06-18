@@ -5,10 +5,8 @@ package org.example;
  *
  */
 import dao.*;
-import model.AccountsEntity;
 
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Scanner;
 
 public class App 
@@ -28,6 +26,9 @@ public class App
             choose = sc.nextLine();
 
             switch (choose) {
+                case "0":
+                    login();
+                    break;
                 case "1":
                     System.out.println("Them Sinh Vien");
                     addStudent();
@@ -74,6 +75,18 @@ public class App
                 case "12":
                     ScoreDao s3 = new ScoreDao();
                     s3.xemdiem("18HCB", "CTT001", "1742005");
+                    break;
+                case "13":
+                    // AccountsDao.createAccount("giaovu", "giaovu", 1);
+                    AccountsDao.changePassword("giaovu", "giaovu", "giaovumoi");
+                    break;
+                case "14":
+                    RemarkEventDao r = new RemarkEventDao();
+                    r.createRemarkEvent("18/06/2020", "19/06/2020");
+                    break;
+                case "15":
+                    RemarkEventDao r1 = new RemarkEventDao();
+                    r1.createRemart("19/06/2020", "1842002", "18HCB", "CTT001", 1, "Em Gioi", 10);
                     break;
                 default:
                     break;

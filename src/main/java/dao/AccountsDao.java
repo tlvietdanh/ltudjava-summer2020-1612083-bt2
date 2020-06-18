@@ -25,24 +25,25 @@ public class AccountsDao {
         if(username.length() == 0 || username.length() == 0) {
             return 0;
         }
-        accountSession = HibernateUtil.getSessionFactory().openSession();
 
-        String hql = "FROM AccountsEntity a Where a.username= '" + username + "'";
-        Query query = accountSession.createQuery(hql);
-
-        if(query.getResultList().size() > 0) {
-            System.out.println("Tai khoan da ton tai!");
-            return 0;
-        }
-
-        //create account instance
-        AccountsEntity accounts = new AccountsEntity();
-        accounts.setUsername(username);
-        accounts.setPassword(password);
-        accounts.setUsertype(userType);
 
         Transaction transaction = null;
         try {
+            accountSession = HibernateUtil.getSessionFactory().openSession();
+
+            String hql = "FROM AccountsEntity a Where a.username= '" + username + "'";
+            Query query = accountSession.createQuery(hql);
+
+            if(query.getResultList().size() > 0) {
+                System.out.println("Tai khoan da ton tai!");
+                return 0;
+            }
+
+            //create account instance
+            AccountsEntity accounts = new AccountsEntity();
+            accounts.setUsername(username);
+            accounts.setPassword(password);
+            accounts.setUsertype(userType);
             accounts.setPassword(hashMD5Password(accounts.getPassword()));
             transaction = accountSession.beginTransaction();
 
@@ -59,14 +60,6 @@ public class AccountsDao {
         return 0;
     }
 
-    private static List<AccountsEntity > getAccounts() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            List result = session.createQuery("from AccountsEntity ", AccountsEntity.class).list();
-            session.close();
-            return result;
-        }
-    }
-
     private static String hashMD5Password(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(password.getBytes());
@@ -77,28 +70,58 @@ public class AccountsDao {
     }
 
     public static boolean login(String username, String password) throws NoSuchAlgorithmException {
-        List<AccountsEntity> accounts = getAccounts();
+        try{
+            accountSession = HibernateUtil.getSessionFactory().openSession();
+            String hashPass = hashMD5Password(password);
 
-        for (int i = 0; i < accounts.size(); i++) {
-            AccountsEntity a = accounts.get(i);
-            if(username.equals(a.getUsername()) && hashMD5Password(password).equals(a.getPassword())) {
-                return true;
+            String hql = "SELECT a from AccountsEntity a WHERE a.password='"+ hashPass +"' and a.username='"+ username +"'";
+            Query query = accountSession.createQuery(hql);
+            if(query.getResultList().size() == 0) {
+                System.out.println("Tai khoan hac mat khau khong dung!");
+                accountSession.close();
+                return false;
             }
+
+            System.out.println("Dang nhap thanh cong!");
+            accountSession.close();
+            return true;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Da co loi!");
+            accountSession.close();
         }
+
         return false;
     }
 
-    public static boolean changePassword(String oldPassword, String newPassword) {
+    public static boolean changePassword(String username, String oldPassword, String newPassword) {
         try {
             accountSession = HibernateUtil.getSessionFactory().openSession();
 
             String hashOldPass = hashMD5Password(oldPassword);
-            String hql = "SELECT a from AccountsEntity a WHERE a.password=''";
+            String hql = "SELECT a from AccountsEntity a WHERE a.password='"+ hashOldPass +"' and a.username='"+ username +"'";
             Query query = accountSession.createQuery(hql);
+            List<AccountsEntity> listAccounts = query.getResultList();
 
+            if(listAccounts.size() == 0) {
+                System.out.println("Mat khau khong chinh xac");
+                accountSession.close();
+                return false;
+            }
+            AccountsEntity a = listAccounts.get(0);
 
+            Transaction transaction = null;
+            String hashNewPass = hashMD5Password(newPassword);
+            a.setPassword(hashNewPass);
+            transaction = accountSession.beginTransaction();
+            accountSession.update(a);
+            transaction.commit();
+            accountSession.close();
+            return true;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
