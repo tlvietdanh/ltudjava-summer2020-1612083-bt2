@@ -69,7 +69,7 @@ public class AccountsDao {
         return DatatypeConverter.printHexBinary(digest).toUpperCase();
     }
 
-    public static boolean login(String username, String password) throws NoSuchAlgorithmException {
+    public AccountsEntity login(String username, String password) throws NoSuchAlgorithmException {
         try{
             accountSession = HibernateUtil.getSessionFactory().openSession();
             String hashPass = hashMD5Password(password);
@@ -77,14 +77,13 @@ public class AccountsDao {
             String hql = "SELECT a from AccountsEntity a WHERE a.password='"+ hashPass +"' and a.username='"+ username +"'";
             Query query = accountSession.createQuery(hql);
             if(query.getResultList().size() == 0) {
-                System.out.println("Tai khoan hac mat khau khong dung!");
                 accountSession.close();
-                return false;
+                return null;
             }
+            AccountsEntity user = (AccountsEntity) query.getResultList().get(0);
 
-            System.out.println("Dang nhap thanh cong!");
             accountSession.close();
-            return true;
+            return user;
 
         }catch (Exception e) {
             e.printStackTrace();
@@ -92,10 +91,10 @@ public class AccountsDao {
             accountSession.close();
         }
 
-        return false;
+        return null;
     }
 
-    public static boolean changePassword(String username, String oldPassword, String newPassword) {
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
         try {
             accountSession = HibernateUtil.getSessionFactory().openSession();
 

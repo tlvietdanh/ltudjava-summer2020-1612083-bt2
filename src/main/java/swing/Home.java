@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import org.example.Controller;
 
 /**
  *
@@ -34,13 +35,15 @@ public class Home extends javax.swing.JFrame {
     
     int tabWidth = 0;
 
+    boolean studentType = Controller.user.getUsertype() == 0 ? true : false;
+
     /**
      * Creates new form Home
      */
     public Home() {
         
         initComponents();
-        tabWidth = tab_bar.getSize().width;
+        tabWidth = tab_bar_teacher.getSize().width;
         listTabPanel = new JPanel [] {tab_class, tab_schedule, tab_student, tab_score, tab_remark, tab_logout};
                 
         initTabComponent();
@@ -100,7 +103,7 @@ public class Home extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        tab_bar = new javax.swing.JPanel();
+        tab_bar_teacher = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jPanel5 = new javax.swing.JPanel();
@@ -120,10 +123,34 @@ public class Home extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         tab_remark1 = new javax.swing.JPanel();
-        tab_remark2 = new javax.swing.JPanel();
+        teacher_change_pass = new javax.swing.JPanel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
         tab_logout = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
+        tab_bar_student = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        jPanel6 = new javax.swing.JPanel();
+        tab_class1 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        tab_class2 = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        tab_remark3 = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        tab_remark5 = new javax.swing.JPanel();
+        tab_remark6 = new javax.swing.JPanel();
+        tab_remark7 = new javax.swing.JPanel();
+        ChangePassword = new javax.swing.JPanel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        tab_logout2 = new javax.swing.JPanel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quản lý sinh viên");
@@ -136,8 +163,8 @@ public class Home extends javax.swing.JFrame {
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tab_bar.setBackground(new java.awt.Color(23, 35, 51));
-        tab_bar.setPreferredSize(new java.awt.Dimension(300, 650));
+        tab_bar_teacher.setBackground(new java.awt.Color(23, 35, 51));
+        tab_bar_teacher.setPreferredSize(new java.awt.Dimension(300, 650));
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -172,7 +199,7 @@ public class Home extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel3.setText("Quản lý lớp học");
+        jLabel3.setText("Danh sách lớp");
 
         javax.swing.GroupLayout tab_classLayout = new javax.swing.GroupLayout(tab_class);
         tab_class.setLayout(tab_classLayout);
@@ -181,7 +208,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(tab_classLayout.createSequentialGroup()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         tab_classLayout.setVerticalGroup(
@@ -216,7 +243,7 @@ public class Home extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel5.setText("Quản lý thời khóa biểu");
+        jLabel5.setText("Thời khóa biểu");
 
         javax.swing.GroupLayout tab_scheduleLayout = new javax.swing.GroupLayout(tab_schedule);
         tab_schedule.setLayout(tab_scheduleLayout);
@@ -225,7 +252,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(tab_scheduleLayout.createSequentialGroup()
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         tab_scheduleLayout.setVerticalGroup(
@@ -259,7 +286,7 @@ public class Home extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel7.setText("Quản lý Sinh viên");
+        jLabel7.setText("Sinh viên");
 
         javax.swing.GroupLayout tab_studentLayout = new javax.swing.GroupLayout(tab_student);
         tab_student.setLayout(tab_studentLayout);
@@ -268,7 +295,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(tab_studentLayout.createSequentialGroup()
                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         tab_studentLayout.setVerticalGroup(
@@ -302,7 +329,7 @@ public class Home extends javax.swing.JFrame {
         jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel9.setText("Quản lý điểm số");
+        jLabel9.setText("Điểm số");
 
         javax.swing.GroupLayout tab_scoreLayout = new javax.swing.GroupLayout(tab_score);
         tab_score.setLayout(tab_scoreLayout);
@@ -311,7 +338,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(tab_scoreLayout.createSequentialGroup()
                 .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         tab_scoreLayout.setVerticalGroup(
@@ -345,7 +372,7 @@ public class Home extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel11.setText("Quản lý khiếu nại");
+        jLabel11.setText("Phúc khảo");
 
         javax.swing.GroupLayout tab_remarkLayout = new javax.swing.GroupLayout(tab_remark);
         tab_remark.setLayout(tab_remarkLayout);
@@ -354,7 +381,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(tab_remarkLayout.createSequentialGroup()
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         tab_remarkLayout.setVerticalGroup(
@@ -385,25 +412,48 @@ public class Home extends javax.swing.JFrame {
 
         jPanel5.add(tab_remark1);
 
-        tab_remark2.setBackground(new java.awt.Color(102, 102, 102));
-        tab_remark2.setAlignmentX(15.0F);
-        tab_remark2.setAlignmentY(15.0F);
-        tab_remark2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tab_remark2.setMinimumSize(new java.awt.Dimension(64, 64));
-        tab_remark2.setOpaque(false);
+        teacher_change_pass.setBackground(new java.awt.Color(102, 102, 102));
+        teacher_change_pass.setAlignmentX(15.0F);
+        teacher_change_pass.setAlignmentY(15.0F);
+        teacher_change_pass.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        teacher_change_pass.setMinimumSize(new java.awt.Dimension(64, 64));
+        teacher_change_pass.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                teacher_change_passMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                teacher_change_passMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                teacher_change_passMouseExited(evt);
+            }
+        });
 
-        javax.swing.GroupLayout tab_remark2Layout = new javax.swing.GroupLayout(tab_remark2);
-        tab_remark2.setLayout(tab_remark2Layout);
-        tab_remark2Layout.setHorizontalGroup(
-            tab_remark2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
+        jLabel18.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logout_icon.png"))); // NOI18N
+
+        jLabel19.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel19.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel19.setText("Đổi mật khẩu");
+
+        javax.swing.GroupLayout teacher_change_passLayout = new javax.swing.GroupLayout(teacher_change_pass);
+        teacher_change_pass.setLayout(teacher_change_passLayout);
+        teacher_change_passLayout.setHorizontalGroup(
+            teacher_change_passLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(teacher_change_passLayout.createSequentialGroup()
+                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        tab_remark2Layout.setVerticalGroup(
-            tab_remark2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 68, Short.MAX_VALUE)
+        teacher_change_passLayout.setVerticalGroup(
+            teacher_change_passLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
         );
 
-        jPanel5.add(tab_remark2);
+        jPanel5.add(teacher_change_pass);
 
         tab_logout.setBackground(new java.awt.Color(102, 102, 102));
         tab_logout.setAlignmentX(15.0F);
@@ -437,7 +487,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(tab_logoutLayout.createSequentialGroup()
                 .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         tab_logoutLayout.setVerticalGroup(
@@ -448,22 +498,22 @@ public class Home extends javax.swing.JFrame {
 
         jPanel5.add(tab_logout);
 
-        javax.swing.GroupLayout tab_barLayout = new javax.swing.GroupLayout(tab_bar);
-        tab_bar.setLayout(tab_barLayout);
-        tab_barLayout.setHorizontalGroup(
-            tab_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tab_barLayout.createSequentialGroup()
-                .addGroup(tab_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(tab_barLayout.createSequentialGroup()
+        javax.swing.GroupLayout tab_bar_teacherLayout = new javax.swing.GroupLayout(tab_bar_teacher);
+        tab_bar_teacher.setLayout(tab_bar_teacherLayout);
+        tab_bar_teacherLayout.setHorizontalGroup(
+            tab_bar_teacherLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_bar_teacherLayout.createSequentialGroup()
+                .addGroup(tab_bar_teacherLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tab_bar_teacherLayout.createSequentialGroup()
                         .addGap(10, 10, 10)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30))
         );
-        tab_barLayout.setVerticalGroup(
-            tab_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tab_barLayout.createSequentialGroup()
+        tab_bar_teacherLayout.setVerticalGroup(
+            tab_bar_teacherLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_bar_teacherLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
@@ -472,7 +522,320 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE))
         );
 
-        getContentPane().add(tab_bar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 290, 650));
+        getContentPane().add(tab_bar_teacher, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 290, 650));
+
+        tab_bar_student.setBackground(new java.awt.Color(23, 35, 51));
+        tab_bar_student.setPreferredSize(new java.awt.Dimension(300, 650));
+
+        jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel12.setText("Kết Quả Học Tập");
+        jLabel12.setToolTipText("");
+
+        jPanel6.setOpaque(false);
+        jPanel6.setLayout(new java.awt.GridLayout(8, 0));
+
+        tab_class1.setBackground(new java.awt.Color(102, 102, 102));
+        tab_class1.setAlignmentX(15.0F);
+        tab_class1.setAlignmentY(15.0F);
+        tab_class1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_class1.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_class1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tab_class1MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tab_class1MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tab_class1MouseExited(evt);
+            }
+        });
+
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home.png"))); // NOI18N
+
+        jLabel14.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel14.setText("Kết quả học tập");
+
+        javax.swing.GroupLayout tab_class1Layout = new javax.swing.GroupLayout(tab_class1);
+        tab_class1.setLayout(tab_class1Layout);
+        tab_class1Layout.setHorizontalGroup(
+            tab_class1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_class1Layout.createSequentialGroup()
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        tab_class1Layout.setVerticalGroup(
+            tab_class1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_class1);
+
+        tab_class2.setBackground(new java.awt.Color(102, 102, 102));
+        tab_class2.setAlignmentX(15.0F);
+        tab_class2.setAlignmentY(15.0F);
+        tab_class2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_class2.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_class2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tab_class2MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tab_class2MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tab_class2MouseExited(evt);
+            }
+        });
+
+        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/home.png"))); // NOI18N
+
+        jLabel20.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel20.setText("Đăng ký môn học");
+
+        javax.swing.GroupLayout tab_class2Layout = new javax.swing.GroupLayout(tab_class2);
+        tab_class2.setLayout(tab_class2Layout);
+        tab_class2Layout.setHorizontalGroup(
+            tab_class2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_class2Layout.createSequentialGroup()
+                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        tab_class2Layout.setVerticalGroup(
+            tab_class2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_class2);
+
+        tab_remark3.setBackground(new java.awt.Color(102, 102, 102));
+        tab_remark3.setAlignmentX(15.0F);
+        tab_remark3.setAlignmentY(15.0F);
+        tab_remark3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_remark3.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_remark3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tab_remark3MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tab_remark3MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tab_remark3MouseExited(evt);
+            }
+        });
+
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/complaint_icon.png"))); // NOI18N
+
+        jLabel24.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel24.setText("Phúc khảo");
+
+        javax.swing.GroupLayout tab_remark3Layout = new javax.swing.GroupLayout(tab_remark3);
+        tab_remark3.setLayout(tab_remark3Layout);
+        tab_remark3Layout.setHorizontalGroup(
+            tab_remark3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_remark3Layout.createSequentialGroup()
+                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        tab_remark3Layout.setVerticalGroup(
+            tab_remark3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_remark3);
+
+        tab_remark5.setBackground(new java.awt.Color(102, 102, 102));
+        tab_remark5.setAlignmentX(15.0F);
+        tab_remark5.setAlignmentY(15.0F);
+        tab_remark5.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_remark5.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_remark5.setOpaque(false);
+
+        javax.swing.GroupLayout tab_remark5Layout = new javax.swing.GroupLayout(tab_remark5);
+        tab_remark5.setLayout(tab_remark5Layout);
+        tab_remark5Layout.setHorizontalGroup(
+            tab_remark5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+        tab_remark5Layout.setVerticalGroup(
+            tab_remark5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_remark5);
+
+        tab_remark6.setBackground(new java.awt.Color(102, 102, 102));
+        tab_remark6.setAlignmentX(15.0F);
+        tab_remark6.setAlignmentY(15.0F);
+        tab_remark6.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_remark6.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_remark6.setOpaque(false);
+
+        javax.swing.GroupLayout tab_remark6Layout = new javax.swing.GroupLayout(tab_remark6);
+        tab_remark6.setLayout(tab_remark6Layout);
+        tab_remark6Layout.setHorizontalGroup(
+            tab_remark6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+        tab_remark6Layout.setVerticalGroup(
+            tab_remark6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_remark6);
+
+        tab_remark7.setBackground(new java.awt.Color(102, 102, 102));
+        tab_remark7.setAlignmentX(15.0F);
+        tab_remark7.setAlignmentY(15.0F);
+        tab_remark7.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_remark7.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_remark7.setOpaque(false);
+
+        javax.swing.GroupLayout tab_remark7Layout = new javax.swing.GroupLayout(tab_remark7);
+        tab_remark7.setLayout(tab_remark7Layout);
+        tab_remark7Layout.setHorizontalGroup(
+            tab_remark7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+        tab_remark7Layout.setVerticalGroup(
+            tab_remark7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_remark7);
+
+        ChangePassword.setBackground(new java.awt.Color(102, 102, 102));
+        ChangePassword.setAlignmentX(15.0F);
+        ChangePassword.setAlignmentY(15.0F);
+        ChangePassword.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        ChangePassword.setMinimumSize(new java.awt.Dimension(64, 64));
+        ChangePassword.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ChangePasswordMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ChangePasswordMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ChangePasswordMouseExited(evt);
+            }
+        });
+
+        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logout_icon.png"))); // NOI18N
+
+        jLabel26.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel26.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel26.setText("Đổi mật khẩu");
+
+        javax.swing.GroupLayout ChangePasswordLayout = new javax.swing.GroupLayout(ChangePassword);
+        ChangePassword.setLayout(ChangePasswordLayout);
+        ChangePasswordLayout.setHorizontalGroup(
+            ChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ChangePasswordLayout.createSequentialGroup()
+                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel26, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        ChangePasswordLayout.setVerticalGroup(
+            ChangePasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel26, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(ChangePassword);
+
+        tab_logout2.setBackground(new java.awt.Color(102, 102, 102));
+        tab_logout2.setAlignmentX(15.0F);
+        tab_logout2.setAlignmentY(15.0F);
+        tab_logout2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_logout2.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_logout2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tab_logout2MouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                tab_logout2MouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                tab_logout2MouseExited(evt);
+            }
+        });
+
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/logout_icon.png"))); // NOI18N
+
+        jLabel28.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel28.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel28.setText("Đăng xuất");
+
+        javax.swing.GroupLayout tab_logout2Layout = new javax.swing.GroupLayout(tab_logout2);
+        tab_logout2.setLayout(tab_logout2Layout);
+        tab_logout2Layout.setHorizontalGroup(
+            tab_logout2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_logout2Layout.createSequentialGroup()
+                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel28, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        tab_logout2Layout.setVerticalGroup(
+            tab_logout2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel28, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel27, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_logout2);
+
+        javax.swing.GroupLayout tab_bar_studentLayout = new javax.swing.GroupLayout(tab_bar_student);
+        tab_bar_student.setLayout(tab_bar_studentLayout);
+        tab_bar_studentLayout.setHorizontalGroup(
+            tab_bar_studentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_bar_studentLayout.createSequentialGroup()
+                .addGroup(tab_bar_studentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(tab_bar_studentLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30))
+        );
+        tab_bar_studentLayout.setVerticalGroup(
+            tab_bar_studentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tab_bar_studentLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(tab_bar_student, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 290, 650));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -606,6 +969,8 @@ public class Home extends javax.swing.JFrame {
 
     private void tab_logoutMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_logoutMouseClicked
         // TODO add your handling code here:
+        Controller.user = null;
+        Controller.handleLogin();
     }//GEN-LAST:event_tab_logoutMouseClicked
 
     private void tab_logoutMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_logoutMouseEntered
@@ -628,9 +993,81 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
         int h = evt.getComponent().getBounds().getSize().height;
         Dimension d = new Dimension(tabWidth, h);
-        tab_bar.setSize(d);
+        tab_bar_teacher.setSize(d);
         
     }//GEN-LAST:event_formComponentResized
+
+    private void tab_class1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_class1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_class1MouseClicked
+
+    private void tab_class1MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_class1MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_class1MouseEntered
+
+    private void tab_class1MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_class1MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_class1MouseExited
+
+    private void tab_remark3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_remark3MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_remark3MouseClicked
+
+    private void tab_remark3MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_remark3MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_remark3MouseEntered
+
+    private void tab_remark3MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_remark3MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_remark3MouseExited
+
+    private void ChangePasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChangePasswordMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChangePasswordMouseClicked
+
+    private void ChangePasswordMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChangePasswordMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChangePasswordMouseEntered
+
+    private void ChangePasswordMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChangePasswordMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChangePasswordMouseExited
+
+    private void tab_logout2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_logout2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_logout2MouseClicked
+
+    private void tab_logout2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_logout2MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_logout2MouseEntered
+
+    private void tab_logout2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_logout2MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_logout2MouseExited
+
+    private void teacher_change_passMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_teacher_change_passMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_teacher_change_passMouseClicked
+
+    private void teacher_change_passMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_teacher_change_passMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_teacher_change_passMouseEntered
+
+    private void teacher_change_passMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_teacher_change_passMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_teacher_change_passMouseExited
+
+    private void tab_class2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_class2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_class2MouseClicked
+
+    private void tab_class2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_class2MouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_class2MouseEntered
+
+    private void tab_class2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_class2MouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tab_class2MouseExited
 
     
 
@@ -638,45 +1075,29 @@ public class Home extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        // ClassTabs c = new ClassTabs();
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Home().setVisible(true);
-            }
-        });
-    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel ChangePassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -685,15 +1106,25 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JPanel tab_bar;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JPanel tab_bar_student;
+    private javax.swing.JPanel tab_bar_teacher;
     private javax.swing.JPanel tab_class;
+    private javax.swing.JPanel tab_class1;
+    private javax.swing.JPanel tab_class2;
     private javax.swing.JPanel tab_logout;
+    private javax.swing.JPanel tab_logout2;
     private javax.swing.JPanel tab_remark;
     private javax.swing.JPanel tab_remark1;
-    private javax.swing.JPanel tab_remark2;
+    private javax.swing.JPanel tab_remark3;
+    private javax.swing.JPanel tab_remark5;
+    private javax.swing.JPanel tab_remark6;
+    private javax.swing.JPanel tab_remark7;
     private javax.swing.JPanel tab_schedule;
     private javax.swing.JPanel tab_score;
     private javax.swing.JPanel tab_student;
+    private javax.swing.JPanel teacher_change_pass;
     // End of variables declaration//GEN-END:variables
 }
