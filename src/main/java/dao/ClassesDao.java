@@ -16,28 +16,60 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.SubjectsEntity;
 
 public class ClassesDao<T> {
 
-    public static Session classesSession;
+    public static final String CLASSES_ERROR = "Hệ thống đang có lỗi, xin vui lòng thử lai sau!";
+    public static final String CLASSES_ERROR_FILE = "Tập tin không hợp lệ";
+    public static final String CLASSES_ERROR_DATA = "Dữ liệu không hợp lệ";
+    public static final String CLASSES_SUCCESS = "Nhập dữ liệu thành công";
+    public static final String CLASSES_ERROR_EXISTS = "Dữ liệu đã tồn tại";
 
-    public boolean importClasses(String fileName, String delimeter) {
-        if( fileName.length() == 0) {
+    
+    public static Session classesSession;
+    
+    private boolean checkCSVData(File f, String delimeter) {
+        BufferedReader bufferedReader;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(f));
+           
+            String row = bufferedReader.readLine();
+
+            while (row != null) {
+                String data[] = row.split(delimeter);
+                if(data.length != 5) {
+                    return false;
+                }
+                row = bufferedReader.readLine();
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(ClassesDao.class.getName()).log(Level.SEVERE, null, ex);
             return false;
+        }
+        return true;
+    }
+
+    public String importClasses(String fileName, String delimeter) {
+        if( fileName.length() == 0) {
+            return CLASSES_ERROR_FILE;
         }
 
         File csvFile = new File(fileName);
         if (csvFile.isFile()) {
             // create BufferedReader and read data from csv
             try {
+                if(!checkCSVData(csvFile, delimeter)){
+                    return CLASSES_ERROR_FILE;
+                }
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFile));
                 String row = bufferedReader.readLine();
 
                 while (row != null) {
                     String data[] = row.split(delimeter);
-                    if(data.length != 5) {
-                        System.out.println("File chua du lieu khong hop le");
-                    }
+                    
 
                     String mssv = data.length > 0 ? data[0] : "";
                     String name = data.length > 1 ? data[1] : "";
@@ -46,7 +78,6 @@ public class ClassesDao<T> {
                     String classID = data.length > 4 ? data[4] : "";
 
                     if(mssv.length() == 0 || classID.length() == 0) {
-                        System.out.println("Thong tin khong hop le");
                         row = bufferedReader.readLine();
                         continue;
                     }
@@ -54,16 +85,16 @@ public class ClassesDao<T> {
                     row = bufferedReader.readLine();
                 }
                 System.out.println("Import thanh cong!!!");
-                return true;
+                return CLASSES_SUCCESS;
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Da xay ra loi trong qua trinh doc file");
-                return false;
+                return CLASSES_ERROR_FILE;
             } catch (IOException e) {
                 System.out.println("Da xay ra loi trong qua trinh doc file");
                 e.printStackTrace();
-                return false;
+                return CLASSES_ERROR_FILE;
             } catch (Exception e) {
 
                 e.printStackTrace();
@@ -73,12 +104,12 @@ public class ClassesDao<T> {
             System.out.println("File khong hop le!!");
         }
 
-        return false;
+        return CLASSES_ERROR_FILE;
     }
 
-    public boolean addStudentToClass(String mssv, String name, int gender, String id, String classID) {
+    public String addStudentToClass(String mssv, String name, int gender, String id, String classID) {
         if(mssv.length() == 0 || classID.length() == 0) {
-            return false;
+            return CLASSES_ERROR_DATA;
         }
         try {
             classesSession = HibernateUtil.getSessionFactory().openSession();
@@ -91,7 +122,7 @@ public class ClassesDao<T> {
             String hql = "FROM ClassesEntity c WHERE c.classId='"+classID+"' and c.studentId='"+mssv+"'";
             Query query = classesSession.createQuery(hql);
             if(query.getResultList().size() > 0) {
-                return false;
+                return CLASSES_ERROR_EXISTS;
             }
 
             ClassesEntity classes = new ClassesEntity();
@@ -103,35 +134,31 @@ public class ClassesDao<T> {
             transaction.commit();
             classesSession.close();
         } catch (Exception e) {
-            return false;
+            return CLASSES_ERROR;
         }
-        return true;
+        return CLASSES_SUCCESS;
     }
 
-    public boolean danhsachlop(String classID) {
+    public List<StudentsEntity> danhsachlop(String classID) {
         if(classID.length() == 0) {
-            System.out.println("Ma loi ko hop le");
-            return false;
+            return null;
         }
-        classesSession = HibernateUtil.getSessionFactory().openSession();
         try{
+            classesSession = HibernateUtil.getSessionFactory().openSession();
+
             String hql = "SELECT s FROM ClassesEntity c left join StudentsEntity s on c.studentId=s.studentId WHERE c.classId='" + classID + "'";
             Query query = classesSession.createQuery(hql);
             List<StudentsEntity> listStudent = query.getResultList();
-            // result here
             Collections.sort(listStudent, (s1, s2) -> {
                 return s1.getStudentId().compareTo(s2.getStudentId());
             });
             // result here
-            for (int i = 0; i < listStudent.size(); i++) {
-                System.out.println(listStudent.get(i).getStudentId());
-            }
+            classesSession.close();
+            return listStudent;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        classesSession.close();
-
-        return true;
+        return null;
     }
 
     public List<StudentsEntity> danhsachmon(String classID, String subject) {
@@ -164,9 +191,6 @@ public class ClassesDao<T> {
                 return s1.getStudentId().compareTo(s2.getStudentId());
             });
             // result here
-            for (int i = 0; i < listStudent.size(); i++) {
-                System.out.println(listStudent.get(i).getStudentId());
-            }
             classesSession.close();
             return listStudent;
 
@@ -178,13 +202,12 @@ public class ClassesDao<T> {
         return null;
     }
 
-    public boolean xembangdiem(String classID, String subjectID) {
+    public List xembangdiem(String classID, String subjectID) {
         if(classID.length() == 0 || subjectID.length() == 0) {
-            System.out.println("Ma loi ko hop le");
-            return false;
+            return null;
         }
-        classesSession = HibernateUtil.getSessionFactory().openSession();
         try{
+            classesSession = HibernateUtil.getSessionFactory().openSession();
 
             // lay  danh  sach hoc sinh
             String getListStudent = "Select c, s.name from ScoresEntity c,  StudentsEntity s where s.studentId=c.studentId  and  c.classId='"+classID+"' and c.subjectId='" + subjectID + "' order by s.studentId";
@@ -192,25 +215,47 @@ public class ClassesDao<T> {
             List listScore = query.getResultList();
 
 
-            Iterator itr = listScore.iterator();
-            while(itr.hasNext()){
-                Object[] obj = (Object[]) itr.next();
-                ScoresEntity score = (ScoresEntity) obj[0];
-                String name = (String) obj[1];
-                System.out.println(score.getStudentId() + "  " + name + "  " + score.getMidTermScore() + "  " + score.getEndTermScore() + "  " + score.getOtherScore() + "  " + score.getTotalScore());
-            }
+          
 
             classesSession.close();
-            return true;
+            return listScore;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         classesSession.close();
 
-        return false;
+        return null;
     }
 
+    public List<ClassesEntity> getListClass() {
+        try {
+            classesSession = HibernateUtil.getSessionFactory().openSession();
+            String hql = "select c from ClassesEntity c group by c.classId";
+            Query q = classesSession.createQuery(hql);
+            List<ClassesEntity> result = q.getResultList();
+            classesSession.close();
+            return result;
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public List<SubjectsEntity> getListSubject(String classId) {
+        try {
+            classesSession = HibernateUtil.getSessionFactory().openSession();
+            String hql = "select m from SchedulesEntity s, SubjectsEntity m where m.subjectId = s.subjectId and s.classId='"+classId+"' group by m.subjectId";
+            Query q = classesSession.createQuery(hql);
+            List<SubjectsEntity> result = q.getResultList();
+            classesSession.close();
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

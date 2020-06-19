@@ -14,11 +14,17 @@ import java.util.List;
 public class ScoreDao {
 
     private Session scoreSession;
+    
+    public static final String SCORE_ERROR = "Hệ thống đang có lỗi, xin vui lòng thử lai sau!";
+    public static final String SCORE_ERROR_FILE = "Tập tin không hợp lệ";
+    public static final String SCORE_ERROR_DATA = "Dữ liệu không hợp lệ";
+    public static final String SCORE_SUCCESS = "Nhập dữ liệu thành công";
+    public static final String SCORE_ERROR_EXISTS = "Dữ liệu đã tồn tại";
 
 
-    public boolean importTranscript(String fileName, String delimeter) {
+    public String importTranscript(String fileName, String delimeter) {
         if( fileName.length() == 0) {
-            return false;
+            return SCORE_ERROR_FILE;
         }
 
         File csvFile = new File(fileName);
@@ -31,7 +37,7 @@ public class ScoreDao {
                 while (row != null) {
                     String data[] = row.split(delimeter);
                     if(data.length != 7) {
-                        System.out.println("File chua du lieu khong hop le");
+                        return SCORE_ERROR_FILE;
                     }
 
                     String mssv = data.length > 0 ? data[0] : "";
@@ -44,33 +50,32 @@ public class ScoreDao {
 
 
                     if(subjectID.length() == 0 || classID.length() == 0 || mssv.length() == 0) {
-                        System.out.println("Thong tin khong hop le");
-                        row = bufferedReader.readLine();
-                        continue;
+                        return SCORE_ERROR_FILE;
                     }
                     addScore(mssv, classID, subjectID, Double.parseDouble(gk), Double.parseDouble(ck), Double.parseDouble(other), Double.parseDouble(total));
                     row = bufferedReader.readLine();
                 }
                 System.out.println("Import thanh cong!!!");
-                return true;
+                return SCORE_SUCCESS;
 
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Da xay ra loi trong qua trinh doc file");
-                return false;
+                return SCORE_ERROR_FILE;
             } catch (IOException e) {
                 System.out.println("Da xay ra loi trong qua trinh doc file");
                 e.printStackTrace();
-                return false;
+                return SCORE_ERROR_FILE;
             } catch (Exception e) {
                 e.printStackTrace();
+                return SCORE_ERROR_FILE;
             }
         }
         else {
             System.out.println("File khong hop le!!");
         }
 
-        return false;
+        return SCORE_ERROR;
     }
 
     public boolean addScore(String mssv, String classID, String subjectID, double gk, double ck, double other, double total) {
@@ -180,4 +185,18 @@ public class ScoreDao {
         return false;
     }
 
+    public List<ScoresEntity> getListClass() {
+        try {
+            scoreSession = HibernateUtil.getSessionFactory().openSession();
+            String hql = "select c from ScoresEntity c group by c.classId, c.subjectId";
+            Query q = scoreSession.createQuery(hql);
+            List<ScoresEntity> result = q.getResultList();
+            scoreSession.close();
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

@@ -5,88 +5,101 @@
  */
 package swing;
 import dao.ClassesDao;
+import dao.ScoreDao;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.table.TableColumn;
 import model.ClassesEntity;
+import model.ScoresEntity;
 import model.StudentsEntity;
-import model.SubjectsEntity;
 
 /**
  *
  * @author black
  */
-public class ClassTabs extends JPanel {
+public class ScoresTabs extends JPanel {
     
+    ScoreDao scoreDao = new ScoreDao();
+    List<ScoresEntity> classesName;
     ClassesDao classesDao = new ClassesDao();
-    List<ClassesEntity> classesName;
     /**
      * Creates new form ClassTabs
      */
-    public ClassTabs() {
+    public ScoresTabs() {
         initComponents();
         
        
         initSelectBoxData();
-                
+        
+        String selectedClass = (String) class_select_box.getSelectedItem();
+        
         initTableData();
     }
     
     
-    void initSelectBoxData() {
-        classesName = classesDao.getListClass();
+    public void initSelectBoxData() {
+        classesName = scoreDao.getListClass();
         String[] name = new String[classesName.size()];
+        String[] subject = new String[classesName.size()];
+
         for (int i = 0; i < classesName.size(); i++) {
             name[i] = classesName.get(i).getClassId();
+            subject[i] = classesName.get(i).getSubjectId();
         }
         class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(name));
-        List<SubjectsEntity> list2 = classesDao.getListSubject((String) class_select_box.getSelectedItem());
-        String[] subject = new String[list2.size() + 1];
-        subject[0] = "";
-        for (int i = 0; i < list2.size(); i++) {
-            subject[i + 1] = list2.get(i).getSubjectId();
-        };
         subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(subject));
     }
     
-    void initTableData() {
+    public void initTableData() {
         String selectedClass = (String) class_select_box.getSelectedItem();
         String selectedSubject = (String) subject_select_box.getSelectedItem();
-        List<StudentsEntity> classData;
-        if(selectedSubject.equals("")) {
-            classData = classesDao.danhsachlop(selectedClass);
-        }
-        else {
-            classData = classesDao.danhsachmon(selectedClass, selectedSubject);
-        }
         
+        List listScore = classesDao.xembangdiem(selectedClass, selectedSubject);
         String[] columnNames = {"STT",
                         "MSSV",
                         "Họ tên",
-                        "Giới tính",
-                        "CMND"};
+                        "Điểm GK",
+                        "Điểm CK",
+                        "Điểm khác",
+                        "Điểm tổng",
+                        "Kết quả"};
 
-        Object[][] data = new Object[classData.size()][columnNames.length];
-
-        for (int i = 0; i < classData.size(); i++) {
-            
+        Object[][] data = new Object[listScore.size()][columnNames.length];
+        int i = 0, numP = 0, numF = 0;
+        Iterator itr = listScore.iterator();
+        
+        while(itr.hasNext()){
+            Object[] obj = (Object[]) itr.next();
+            ScoresEntity score = (ScoresEntity) obj[0];
+            String name = (String) obj[1];
             data[i][0] = i + 1;
-            data[i][1] = classData.get(i).getStudentId();
-            data[i][2] = classData.get(i).getName();
-            data[i][3] = classData.get(i).getGender() == 1 ? "Nam" : "Nữ";
-            data[i][4] = classData.get(i).getIdentifyId();
+            data[i][1] = score.getStudentId();
+            data[i][2] = name;
+            data[i][3] = score.getMidTermScore();
+            data[i][4] = score.getEndTermScore();
+            data[i][5] = score.getOtherScore();
+            data[i][6] = score.getTotalScore();
+            data[i][7] = score.getTotalScore() >= 5.0 ? "Đậu" : "Rớt";
+            if(score.getTotalScore() >= 5.0) {
+                numP++;
+            }
+            else {
+                numF++;
+            }
+            i++;
         }
-                
+        
         table_class.setModel(new javax.swing.table.DefaultTableModel(
             data,
             columnNames
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -98,6 +111,14 @@ public class ClassTabs extends JPanel {
             }
 
         });
+        numPass.setText(numP+"");
+        numFail.setText(numF+"");
+        double per1 = (double) numP / (numP + numF) * 100;
+        double per2 = (double) numF / (numP + numF) * 100;
+
+        perPass.setText(per1 + "%");
+        perFail.setText(per2 + "%");
+
     }
 
     /**
@@ -122,6 +143,14 @@ public class ClassTabs extends JPanel {
         subject_select_box = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        numDLable = new javax.swing.JLabel();
+        numPass = new javax.swing.JLabel();
+        numR = new javax.swing.JLabel();
+        numFail = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        perPass = new javax.swing.JLabel();
+        perFail = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
 
@@ -150,7 +179,7 @@ public class ClassTabs extends JPanel {
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Quản lý lớp học");
+        jLabel1.setText("Quản lý bảng điểm");
         jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
         jPanel1.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
 
@@ -169,7 +198,7 @@ public class ClassTabs extends JPanel {
         });
 
         jButton1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jButton1.setText("Import danh sách lớp");
+        jButton1.setText("Import bảng điểm");
         jButton1.setPreferredSize(new java.awt.Dimension(187, 35));
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -214,21 +243,49 @@ public class ClassTabs extends JPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(subject_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(class_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(subject_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(class_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jButton2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
-        jButton2.setText("Thêm sinh viên");
+        jButton2.setText("Chỉnh sửa điểm");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
+
+        numDLable.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        numDLable.setText("Số lượng sinh viên đậu:");
+
+        numPass.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        numPass.setForeground(new java.awt.Color(0, 153, 0));
+        numPass.setText("20%");
+
+        numR.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        numR.setText("Số lượng sinh viên rớt:");
+
+        numFail.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        numFail.setForeground(new java.awt.Color(204, 0, 51));
+        numFail.setText("30%");
+
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel8.setText("Phần trăm sinh viên đậu:");
+
+        perPass.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        perPass.setForeground(new java.awt.Color(0, 153, 0));
+        perPass.setText("20%");
+
+        perFail.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        perFail.setForeground(new java.awt.Color(204, 0, 51));
+        perFail.setText("30%");
+
+        jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel11.setText("Phần trăm sinh viên rớt:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -241,7 +298,24 @@ public class ClassTabs extends JPanel {
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(numDLable)
+                                    .addComponent(numR))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(numFail)
+                                    .addComponent(numPass))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel8)
+                                    .addComponent(jLabel11))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(perFail)
+                                    .addComponent(perPass))))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -253,20 +327,32 @@ public class ClassTabs extends JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(numDLable)
+                            .addComponent(numPass))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(numR)
+                            .addComponent(numFail)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel8)
+                            .addComponent(perPass))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel11)
+                            .addComponent(perFail))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addGap(32, 32, 32))
+                .addGap(12, 12, 12))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void class_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_class_select_boxActionPerformed
-        List<SubjectsEntity> list2 = classesDao.getListSubject((String) class_select_box.getSelectedItem());
-        String[] subject = new String[list2.size() + 1];
-        subject[0] = "";
-        for (int i = 0; i < list2.size(); i++) {
-            subject[i + 1] = list2.get(i).getSubjectId();
-        };
-        subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(subject));
+        JComboBox cb = (JComboBox)evt.getSource();
         initTableData();
     }//GEN-LAST:event_class_select_boxActionPerformed
 
@@ -283,8 +369,8 @@ public class ClassTabs extends JPanel {
         // user selects a file
             File selectedFile = fileChooser.getSelectedFile();
             System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-            String info = classesDao.importClasses(selectedFile.getAbsolutePath(), ",");
-            if(info.equals(ClassesDao.CLASSES_SUCCESS)) {
+            String info = scoreDao.importTranscript(selectedFile.getAbsolutePath(), ",");
+            if(info.equals(ScoreDao.SCORE_SUCCESS)) {
                 initSelectBoxData();
                 initTableData();
             }
@@ -299,7 +385,6 @@ public class ClassTabs extends JPanel {
 
     private void subject_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subject_select_boxActionPerformed
         // TODO add your handling code here:
-        initTableData();
     }//GEN-LAST:event_subject_select_boxActionPerformed
 
     public void openFileChooser() {
@@ -312,13 +397,21 @@ public class ClassTabs extends JPanel {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel numDLable;
+    private javax.swing.JLabel numFail;
+    private javax.swing.JLabel numPass;
+    private javax.swing.JLabel numR;
+    private javax.swing.JLabel perFail;
+    private javax.swing.JLabel perPass;
     private javax.swing.JComboBox<String> subject_select_box;
     private javax.swing.JTable table_class;
     // End of variables declaration//GEN-END:variables

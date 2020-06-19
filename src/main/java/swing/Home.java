@@ -20,10 +20,10 @@ public class Home extends javax.swing.JFrame {
     ClassTabs classTabs = new ClassTabs();
     ScheduleTabs scheduleTabs = new ScheduleTabs();
     StudentTabs studentTabs = new StudentTabs();
-    ScoreTabs scoreTabs = new ScoreTabs();
+    ScoresTabs scoresTabs = new ScoresTabs();
     RemarkTabs remarkTabs = new RemarkTabs();
     
-    JPanel[] listComponentPanel = new JPanel[] {classTabs, scheduleTabs, studentTabs, scoreTabs, remarkTabs};
+    JPanel[] listComponentPanel = new JPanel[] {classTabs, scheduleTabs, studentTabs, scoresTabs, remarkTabs};
     JPanel[] listTabPanel;
 
     
@@ -52,7 +52,7 @@ public class Home extends javax.swing.JFrame {
         resetAllColor(tab_class);
         
         for (int i = 0; i < listComponentPanel.length; i++) {
-            getContentPane().add(listComponentPanel[i], new org.netbeans.lib.awtextra.AbsoluteConstraints(317, 0, 840, 647));
+            getContentPane().add(listComponentPanel[i], new org.netbeans.lib.awtextra.AbsoluteConstraints(317, 0, 830, 647));
         }
         setVisibleTabs(classTabs);
         
@@ -125,7 +125,10 @@ public class Home extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
 
-        setTitle("mFrame");
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Quản lý sinh viên");
+        setAlwaysOnTop(true);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
                 formComponentResized(evt);
@@ -134,6 +137,7 @@ public class Home extends javax.swing.JFrame {
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         tab_bar.setBackground(new java.awt.Color(23, 35, 51));
+        tab_bar.setPreferredSize(new java.awt.Dimension(300, 650));
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -552,7 +556,7 @@ public class Home extends javax.swing.JFrame {
 
     private void tab_scoreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_scoreMouseClicked
         // TODO add your handling code here:
-        setVisibleTabs(scoreTabs);
+        setVisibleTabs(scoresTabs);
         setColor(tab_score);
         resetAllColor(tab_score);
         this.currentTabs = "tab_score";
