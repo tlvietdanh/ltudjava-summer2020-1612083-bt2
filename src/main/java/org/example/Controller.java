@@ -4,35 +4,54 @@ package org.example;/*
  * and open the template in the editor.
  */
 
-import model.AccountsEntity;
-import swing.Home;
-import swing.Login;
+import swing.Student.StudentDashBoard;
+import swing.TeacherDashBoard;
+import swing.login.Login;
 
-/**
- *
- * @author black
- */
 public class Controller {
 
-    public static AccountsEntity user = null;
-    private static Home home;
+
+
+    public static User user = null;
+    private static TeacherDashBoard teacherDashBoard;
+    private static StudentDashBoard studentDashBoard;
     private static Login login;
     public static void handleLogin() {
 
-        if(user != null) {
-            home = new Home();
-            home.setVisible(true);
+        if(user == null) {
+            login = new Login();
+            login.setVisible(true);
+            if(teacherDashBoard!=null) {
+                teacherDashBoard.setVisible(false);
+                teacherDashBoard.dispose();
+            }
+            if(studentDashBoard!=null) {
+                studentDashBoard.setVisible(false);
+                studentDashBoard.dispose();
+            }
+        }
+        else if(user.userType == 1){
+            teacherDashBoard = new TeacherDashBoard();
+            teacherDashBoard.setVisible(true);
             if(login!=null) {
                 login.setVisible(false);
                 login.dispose();
             }
+            if(studentDashBoard != null) {
+                studentDashBoard.setVisible(false);
+                studentDashBoard.dispose();
+            }
         }
         else {
-            login = new Login();
-            login.setVisible(true);
-            if(home!=null) {
-                home.setVisible(false);
-                home.dispose();
+            studentDashBoard = new StudentDashBoard();
+            studentDashBoard.setVisible(true);
+            if(login!=null) {
+                login.setVisible(false);
+                login.dispose();
+            }
+            if(teacherDashBoard != null) {
+                teacherDashBoard.setVisible(false);
+                teacherDashBoard.dispose();
             }
         }
     }
@@ -51,20 +70,19 @@ public class Controller {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TeacherDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TeacherDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TeacherDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(TeacherDashBoard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         // ClassTabs c = new ClassTabs();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-
                 handleLogin();
             }
         });

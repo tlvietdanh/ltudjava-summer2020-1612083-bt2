@@ -8,15 +8,17 @@ import dao.ClassesDao;
 import dao.ScoreDao;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.table.TableColumn;
-import model.ClassesEntity;
-import model.ScoresEntity;
-import model.StudentsEntity;
+
+import model.*;
+import org.example.Controller;
+import swing.Dialog.UpdateScore;
 
 /**
  *
@@ -25,8 +27,10 @@ import model.StudentsEntity;
 public class ScoresTabs extends JPanel {
     
     ScoreDao scoreDao = new ScoreDao();
-    List<ScoresEntity> classesName;
     ClassesDao classesDao = new ClassesDao();
+    List<SpecialstudentsEntity> special = new ArrayList<>();
+
+    boolean studentType = Controller.user.userType == 0 ? true : false;
     /**
      * Creates new form ClassTabs
      */
@@ -35,31 +39,79 @@ public class ScoresTabs extends JPanel {
         
        
         initSelectBoxData();
-        
-        String selectedClass = (String) class_select_box.getSelectedItem();
-        
+
         initTableData();
+
+        if(studentType) {
+            jButton1.setVisible(false);
+            jButton2.setVisible(false);
+            numDLable.setVisible(false);
+            numFail.setVisible(false);
+            numPass.setVisible(false);
+            perFail.setVisible(false);
+            perPass.setVisible(false);
+            jLabel8.setVisible(false);
+            jLabel11.setVisible(false);
+            numR.setVisible(false);
+        }
     }
     
     
     public void initSelectBoxData() {
-        classesName = scoreDao.getListClass();
-        String[] name = new String[classesName.size()];
-        String[] subject = new String[classesName.size()];
 
-        for (int i = 0; i < classesName.size(); i++) {
-            name[i] = classesName.get(i).getClassId();
-            subject[i] = classesName.get(i).getSubjectId();
+
+
+        List<String> className = new ArrayList<>() ;
+
+        if(studentType) {
+           className = scoreDao.getListClassOfStudent(Controller.user.username);
         }
+        else {
+            className = scoreDao.getListClass();
+        }
+        if(className == null || className.size() == 0) {
+            class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            return;
+        }
+
+        String[] name = new String[className.size()];
+
+        className.toArray(name);
+
         class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(name));
+        initSubjectData(className.get(0));
+    }
+    
+    public void initSubjectData(String classID) {
+        List<String> subjectsName = new ArrayList<>();
+        if(studentType) {
+            subjectsName = scoreDao.getListSubjectOfStudent(Controller.user.username,classID);
+        }
+        else {
+            subjectsName = scoreDao.getListSubject(classID);
+        }
+        if(subjectsName.size() == 0) {
+            subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            return;
+        }
+        String[] subject = new String[subjectsName.size()];
+        subjectsName.toArray(subject);
+
         subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(subject));
+
     }
     
     public void initTableData() {
         String selectedClass = (String) class_select_box.getSelectedItem();
         String selectedSubject = (String) subject_select_box.getSelectedItem();
-        
-        List listScore = classesDao.xembangdiem(selectedClass, selectedSubject);
+        List listScore;
+        if(studentType) {
+            listScore = scoreDao.xemdiem(selectedClass, selectedSubject, Controller.user.username);
+
+        }
+        else {
+            listScore = classesDao.xembangdiem(selectedClass, selectedSubject);
+        }
         String[] columnNames = {"STT",
                         "MSSV",
                         "Họ tên",
@@ -69,31 +121,40 @@ public class ScoresTabs extends JPanel {
                         "Điểm tổng",
                         "Kết quả"};
 
-        Object[][] data = new Object[listScore.size()][columnNames.length];
-        int i = 0, numP = 0, numF = 0;
-        Iterator itr = listScore.iterator();
-        
-        while(itr.hasNext()){
-            Object[] obj = (Object[]) itr.next();
-            ScoresEntity score = (ScoresEntity) obj[0];
-            String name = (String) obj[1];
-            data[i][0] = i + 1;
-            data[i][1] = score.getStudentId();
-            data[i][2] = name;
-            data[i][3] = score.getMidTermScore();
-            data[i][4] = score.getEndTermScore();
-            data[i][5] = score.getOtherScore();
-            data[i][6] = score.getTotalScore();
-            data[i][7] = score.getTotalScore() >= 5.0 ? "Đậu" : "Rớt";
-            if(score.getTotalScore() >= 5.0) {
-                numP++;
+        Object[][] data = new Object[ listScore != null ? listScore.size() : 0][columnNames.length];
+        if(listScore != null) {
+            int i = 0, numP = 0, numF = 0;
+            Iterator itr = listScore.iterator();
+
+            while(itr.hasNext()){
+                Object[] obj = (Object[]) itr.next();
+                ScoresEntity score = (ScoresEntity) obj[0];
+                String name = (String) obj[1];
+                data[i][0] = i + 1;
+                data[i][1] = score.getStudentId();
+                data[i][2] = name;
+                data[i][3] = score.getMidTermScore();
+                data[i][4] = score.getEndTermScore();
+                data[i][5] = score.getOtherScore();
+                data[i][6] = score.getTotalScore();
+                data[i][7] = score.getTotalScore() >= 5.0 ? "Đậu" : "Rớt";
+                if(score.getTotalScore() >= 5.0) {
+                    numP++;
+                }
+                else {
+                    numF++;
+                }
+                i++;
             }
-            else {
-                numF++;
-            }
-            i++;
+            numPass.setText(numP+"");
+            numFail.setText(numF+"");
+            double per1 = (double) numP / (numP + numF) * 100;
+            double per2 = (double) numF / (numP + numF) * 100;
+
+            perPass.setText(per1 + "%");
+            perFail.setText(per2 + "%");
         }
-        
+
         table_class.setModel(new javax.swing.table.DefaultTableModel(
             data,
             columnNames
@@ -111,13 +172,6 @@ public class ScoresTabs extends JPanel {
             }
 
         });
-        numPass.setText(numP+"");
-        numFail.setText(numF+"");
-        double per1 = (double) numP / (numP + numF) * 100;
-        double per2 = (double) numF / (numP + numF) * 100;
-
-        perPass.setText(per1 + "%");
-        perFail.setText(per2 + "%");
 
     }
 
@@ -151,6 +205,7 @@ public class ScoresTabs extends JPanel {
         perPass = new javax.swing.JLabel();
         perFail = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         jTextField1.setText("jTextField1");
 
@@ -253,6 +308,11 @@ public class ScoresTabs extends JPanel {
 
         jButton2.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         jButton2.setText("Chỉnh sửa điểm");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -287,6 +347,8 @@ public class ScoresTabs extends JPanel {
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel11.setText("Phần trăm sinh viên rớt:");
 
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Rolling-1s-32px.gif"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -297,26 +359,25 @@ public class ScoresTabs extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+                    .addComponent(jButton2)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(numDLable)
-                                    .addComponent(numR))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(numFail)
-                                    .addComponent(numPass))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel8)
-                                    .addComponent(jLabel11))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(perFail)
-                                    .addComponent(perPass))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(numDLable)
+                            .addComponent(numR))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(numFail)
+                            .addComponent(numPass))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel8)
+                            .addComponent(jLabel11))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(perFail)
+                            .addComponent(perPass))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -326,7 +387,7 @@ public class ScoresTabs extends JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -344,15 +405,17 @@ public class ScoresTabs extends JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel11)
-                            .addComponent(perFail))))
+                            .addComponent(perFail)))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addGap(12, 12, 12))
+                .addGap(26, 26, 26))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void class_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_class_select_boxActionPerformed
-        JComboBox cb = (JComboBox)evt.getSource();
+        String selectedClass = (String) class_select_box.getSelectedItem();
+        initSubjectData(selectedClass);
         initTableData();
     }//GEN-LAST:event_class_select_boxActionPerformed
 
@@ -385,11 +448,19 @@ public class ScoresTabs extends JPanel {
 
     private void subject_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subject_select_boxActionPerformed
         // TODO add your handling code here:
+        initTableData();
     }//GEN-LAST:event_subject_select_boxActionPerformed
 
-    public void openFileChooser() {
-       
-    }
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        // TODO add your handling code here:
+        UpdateScore addStudent = new UpdateScore();
+        addStudent.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        addStudent.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        addStudent.setSize(new Dimension(456, 610));
+        addStudent.setLocationRelativeTo(evt.getComponent().getParent());
+        addStudent.setVisible(true);
+    }//GEN-LAST:event_jButton2MouseClicked
+
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -400,6 +471,7 @@ public class ScoresTabs extends JPanel {
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;

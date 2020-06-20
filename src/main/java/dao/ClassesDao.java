@@ -258,4 +258,47 @@ public class ClassesDao<T> {
         return null;
     }
 
+    public List<String> getClassOfStudent(String studentID) {
+        if(studentID.length() == 0) {
+            System.out.println("Ma loi ko hop le");
+            return null;
+        }
+        classesSession = HibernateUtil.getSessionFactory().openSession();
+        try {
+            String hql = "SELECT c from ClassesEntity c where c.studentId='" + studentID + "'";
+            Query query = classesSession.createQuery(hql);
+            List<ClassesEntity> result = query.getResultList();
+
+            List<String> finalResult = new ArrayList<>();
+
+            for (int i = 0; i < result.size(); i++) {
+                finalResult.add(result.get(i).getClassId());
+            }
+
+            classesSession.close();
+
+            return finalResult;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        classesSession.close();
+        return null;
+    }
+
+    public List<SpecialstudentsEntity> getSpecialClassAndSubject( String studentID) {
+        try {
+            classesSession = HibernateUtil.getSessionFactory().openSession();
+            String hql = "select s from SpecialstudentsEntity s where s.studentId='"+studentID+"'";
+            Query q = classesSession.createQuery(hql);
+            List<SpecialstudentsEntity> result = q.getResultList();
+            classesSession.close();
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

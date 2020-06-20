@@ -94,7 +94,7 @@ public class AccountsDao {
         return null;
     }
 
-    public boolean changePassword(String username, String oldPassword, String newPassword) {
+    public String changePassword(String username, String oldPassword, String newPassword) {
         try {
             accountSession = HibernateUtil.getSessionFactory().openSession();
 
@@ -104,9 +104,8 @@ public class AccountsDao {
             List<AccountsEntity> listAccounts = query.getResultList();
 
             if(listAccounts.size() == 0) {
-                System.out.println("Mat khau khong chinh xac");
                 accountSession.close();
-                return false;
+                return "Mật khẩu không chính xác!";
             }
             AccountsEntity a = listAccounts.get(0);
 
@@ -117,10 +116,10 @@ public class AccountsDao {
             accountSession.update(a);
             transaction.commit();
             accountSession.close();
-            return true;
+            return "Thay đổi mật khẩu thành công!";
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        return false;
+        return "Đã có lỗi xảy ra";
     }
 }
