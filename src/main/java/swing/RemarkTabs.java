@@ -5,17 +5,136 @@
  */
 package swing;
 
+import java.util.Iterator;
+import java.util.List;
+
+import dao.RemarkEventDao;
+import model.RemarkEntity;
+import model.StudentsEntity;
+
 /**
  *
  * @author black
  */
 public class RemarkTabs extends javax.swing.JPanel {
-
+    String[] columnNames = {"STT",
+                            "MSSV",
+                            "Họ tên",
+                            "Môn",
+                            "Cột điểm",
+                            "Điểm mong muốn",
+                            "Lý do",
+                            "Trạng thái"};
+    RemarkEventDao rkd = new RemarkEventDao();
     /**
      * Creates new form ClassTabs
      */
     public RemarkTabs() {
         initComponents();
+        
+        Object[][] data = new Object[0][columnNames.length];
+        
+        table_class.setModel(new javax.swing.table.DefaultTableModel(
+            data,
+            columnNames
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        loading_conponent.setVisible(false);
+        initTableData();
+    }
+    
+    class GetTableData extends Thread {
+        public void run() 
+        { 
+            try
+            { 
+                List remarkData = rkd.getListRemark();
+
+                if(remarkData == null) {
+                    return;
+                }
+                
+                Object[][] data = new Object[remarkData.size()][columnNames.length];
+
+                Iterator itr = remarkData.iterator();
+                int i = 0;
+                while (itr.hasNext()) {
+                    Object[] objects = (Object[]) itr.next();
+                    RemarkEntity r = (RemarkEntity) objects[0];
+                    String name = (String) objects[1];
+                    String subname = (String) objects[2];
+                    data[i][0] = i + 1;
+                    data[i][1] = r.getStudentId();
+                    data[i][2] = name;
+                    data[i][3] = subname;
+                    switch (r.getType()) {
+                        case 0:
+                            data[i][4] = "Điểm giữa kỳ";
+                            break;
+                        case 1:
+                            data[i][4] = "Điểm cuối kỳ";
+                            break;
+                        case 2:
+                            data[i][4] = "Điểm khác";
+                            break;
+                        case 3:
+                            data[i][4] = "Điểm tổng kết";
+                            break;
+                    }
+                    data[i][5] = r.getNewScore();
+                    data[i][6] = r.getReason();
+                    switch (r.getStatus()) {
+                        case 0:
+                            data[i][7] = "Chưa cập nhật";
+                            break;
+                        case 1:
+                            data[i][7] = "Đã cập nhật";
+                            break;
+                        case 2:
+                            data[i][7] = "Đã từ chối";
+                            break;
+                    }
+                    i++;
+                }
+
+
+                table_class.setModel(new javax.swing.table.DefaultTableModel(
+                    data,
+                    columnNames
+                ) {
+                    boolean[] canEdit = new boolean [] {
+                        false, false, false, false, false
+                    };
+
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        return canEdit [columnIndex];
+                    }
+
+                    public boolean isResizeable(int rowIndex, int columnIndex) {
+                        return canEdit [columnIndex];
+                    }
+
+                });
+                loading_conponent.setVisible(false);
+
+            } 
+            catch (Exception e) 
+            { 
+                // Throwing an exception 
+                System.out.println ("Exception is caught"); 
+            } 
+        } 
+    }
+    
+    void initTableData() {
+        GetTableData getTableData = new GetTableData();
+        getTableData.start();
     }
 
     /**
@@ -27,18 +146,139 @@ public class RemarkTabs extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table_class = new javax.swing.JTable();
+        add_remark = new javax.swing.JButton();
+        update_remark = new javax.swing.JButton();
+        loading_conponent = new javax.swing.JLabel();
 
-        setLayout(new java.awt.BorderLayout());
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Remark");
-        add(jLabel1, java.awt.BorderLayout.CENTER);
+        jLabel1.setText("Quản lý phúc khảo");
+        jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
+
+        jScrollPane1.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+
+        table_class.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        table_class.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "STT", "MSSV", "Họ và tên", "Giới tính", "CMND"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(table_class);
+
+        add_remark.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        add_remark.setText("Tạo đợt phúc khảo");
+        add_remark.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                add_remarkMouseClicked(evt);
+            }
+        });
+        add_remark.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                add_remarkActionPerformed(evt);
+            }
+        });
+
+        update_remark.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        update_remark.setText("Cập nhật kết quả phúc khảo");
+        update_remark.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                update_remarkMouseClicked(evt);
+            }
+        });
+        update_remark.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                update_remarkActionPerformed(evt);
+            }
+        });
+
+        loading_conponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Rolling-1s-32px.gif"))); // NOI18N
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(update_remark)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(add_remark))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, 0)
+                        .addComponent(loading_conponent)))
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addContainerGap()))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(90, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(add_remark, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(update_remark, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(loading_conponent, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 520, Short.MAX_VALUE)))
+        );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void add_remarkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_add_remarkMouseClicked
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_add_remarkMouseClicked
+
+    private void add_remarkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_remarkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_add_remarkActionPerformed
+
+    private void update_remarkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_update_remarkMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_update_remarkMouseClicked
+
+    private void update_remarkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_remarkActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_update_remarkActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add_remark;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel loading_conponent;
+    private javax.swing.JTable table_class;
+    private javax.swing.JButton update_remark;
     // End of variables declaration//GEN-END:variables
 }

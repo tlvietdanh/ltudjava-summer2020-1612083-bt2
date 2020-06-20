@@ -44,6 +44,8 @@ public class TeacherDashBoard extends javax.swing.JFrame {
     public TeacherDashBoard() {
         
         initComponents();
+        this.setLocation(100, 50);
+
         tabWidth = tab_bar_teacher.getSize().width;
         listTabPanel = new JPanel [] {tab_class, tab_schedule, tab_student, tab_score, tab_remark, tab_logout, tab_change_pass};
                 

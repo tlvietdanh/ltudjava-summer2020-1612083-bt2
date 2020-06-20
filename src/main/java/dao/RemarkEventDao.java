@@ -115,4 +115,21 @@ public class RemarkEventDao {
         remarkEventSession.close();
         return null;
     }
+
+    public List getListRemark() {
+        try {
+            remarkEventSession = HibernateUtil.getSessionFactory().openSession();
+            String hql = "select r, s.name, c.name from RemarkEntity r, StudentsEntity s, SubjectsEntity c where s.studentId = r.studentId and c.subjectId=r.subjectId";
+            Query query = remarkEventSession.createQuery(hql);
+            List result = query.getResultList();
+
+            remarkEventSession.close();
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        remarkEventSession.close();
+        return null;
+    }
 }

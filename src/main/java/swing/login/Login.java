@@ -28,6 +28,7 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         username.setHorizontalAlignment(JTextField.LEFT);
         password.setHorizontalAlignment(JTextField.LEFT);
+        this.setLocationRelativeTo(null);
     }
 
     /**
