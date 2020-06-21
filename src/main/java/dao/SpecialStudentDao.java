@@ -9,14 +9,14 @@ import util.HibernateUtil;
 public class SpecialStudentDao {
     Session specialSession;
 
-    public boolean requestStudyAgains(String mssv, String classID, String subjectID, int type) {
+    public String requestStudyAgains(String mssv, String classID, String subjectID, int type) {
         specialSession = HibernateUtil.getSessionFactory().openSession();
 
         // check is student exist in the class
         String hql = "FROM SpecialstudentsEntity c WHERE c.classId='"+classID+"' and c.studentId='"+mssv+"' and c.subjectId='"+subjectID +"'";
         Query query = specialSession.createQuery(hql);
         if(query.getResultList().size() > 0) {
-            return false;
+            return "Dữ liệu đã tồn tại!";
         }
         Transaction transaction = null;
         try {
@@ -30,11 +30,11 @@ public class SpecialStudentDao {
             specialSession.save(specialstudentsEntity);
             transaction.commit();
             specialSession.close();
-            return true;
+            return "Thêm thành công!";
         }catch (Exception e) {
 
         }
         specialSession.close();
-        return false;
+        return "Đã có lỗi xảy ra, xin vui lòng thử lại!";
     }
 }

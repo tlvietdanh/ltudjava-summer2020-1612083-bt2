@@ -23,7 +23,7 @@ public class StudentDashBoard extends javax.swing.JFrame {
     ScheduleTabs scheduleTabs = new ScheduleTabs();
     StudentTabs studentTabs = new StudentTabs();
     ScoresTabs scoresTabs = new ScoresTabs();
-    RemarkTabs remarkTabs = new RemarkTabs();
+    RemarkStudentTabs remarkTabs = new RemarkStudentTabs();
     ChangePasswordTabs changePasswordTabs = new ChangePasswordTabs();
 
     JPanel[] listComponentPanel = new JPanel[] { studentTabs, scoresTabs, remarkTabs, changePasswordTabs};
@@ -43,11 +43,11 @@ public class StudentDashBoard extends javax.swing.JFrame {
     public StudentDashBoard() {
         
         initComponents();
-        this.setLocationRelativeTo(null);
+        this.setLocation(200, 50);
 
 
         tabWidth = tab_bar_student.getSize().width;
-        listTabPanel = new JPanel [] {tab_score, tab_subject, tab_change_password, tab_remark, tab_logout};
+        listTabPanel = new JPanel [] {tab_score, tab_change_password, tab_remark, tab_logout};
                 
         initTabComponent();
 
@@ -113,15 +113,13 @@ public class StudentDashBoard extends javax.swing.JFrame {
         tab_score = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
-        tab_subject = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
         tab_remark = new javax.swing.JPanel();
         jLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         tab_remark5 = new javax.swing.JPanel();
         tab_remark6 = new javax.swing.JPanel();
         tab_remark7 = new javax.swing.JPanel();
+        tab_remark8 = new javax.swing.JPanel();
         tab_change_password = new javax.swing.JPanel();
         jLabel25 = new javax.swing.JLabel();
         jLabel26 = new javax.swing.JLabel();
@@ -131,7 +129,6 @@ public class StudentDashBoard extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quản lý sinh viên");
-        setAlwaysOnTop(true);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentResized(java.awt.event.ComponentEvent evt) {
@@ -194,49 +191,6 @@ public class StudentDashBoard extends javax.swing.JFrame {
         );
 
         jPanel6.add(tab_score);
-
-        tab_subject.setBackground(new java.awt.Color(102, 102, 102));
-        tab_subject.setAlignmentX(15.0F);
-        tab_subject.setAlignmentY(15.0F);
-        tab_subject.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tab_subject.setMinimumSize(new java.awt.Dimension(64, 64));
-        tab_subject.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tab_subjectMouseClicked(evt);
-            }
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                tab_subjectMouseEntered(evt);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                tab_subjectMouseExited(evt);
-            }
-        });
-
-        jLabel15.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/literature-24.png"))); // NOI18N
-
-        jLabel20.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel20.setText("Đăng ký môn học");
-
-        javax.swing.GroupLayout tab_subjectLayout = new javax.swing.GroupLayout(tab_subject);
-        tab_subject.setLayout(tab_subjectLayout);
-        tab_subjectLayout.setHorizontalGroup(
-            tab_subjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(tab_subjectLayout.createSequentialGroup()
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        tab_subjectLayout.setVerticalGroup(
-            tab_subjectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
-        );
-
-        jPanel6.add(tab_subject);
 
         tab_remark.setBackground(new java.awt.Color(102, 102, 102));
         tab_remark.setAlignmentX(15.0F);
@@ -340,6 +294,26 @@ public class StudentDashBoard extends javax.swing.JFrame {
         );
 
         jPanel6.add(tab_remark7);
+
+        tab_remark8.setBackground(new java.awt.Color(102, 102, 102));
+        tab_remark8.setAlignmentX(15.0F);
+        tab_remark8.setAlignmentY(15.0F);
+        tab_remark8.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tab_remark8.setMinimumSize(new java.awt.Dimension(64, 64));
+        tab_remark8.setOpaque(false);
+
+        javax.swing.GroupLayout tab_remark8Layout = new javax.swing.GroupLayout(tab_remark8);
+        tab_remark8.setLayout(tab_remark8Layout);
+        tab_remark8Layout.setHorizontalGroup(
+            tab_remark8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 290, Short.MAX_VALUE)
+        );
+        tab_remark8Layout.setVerticalGroup(
+            tab_remark8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 68, Short.MAX_VALUE)
+        );
+
+        jPanel6.add(tab_remark8);
 
         tab_change_password.setBackground(new java.awt.Color(102, 102, 102));
         tab_change_password.setAlignmentX(15.0F);
@@ -561,18 +535,6 @@ public class StudentDashBoard extends javax.swing.JFrame {
         resetColor(tab_logout);
     }//GEN-LAST:event_tab_logoutMouseExited
 
-    private void tab_subjectMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_subjectMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tab_subjectMouseClicked
-
-    private void tab_subjectMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_subjectMouseEntered
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tab_subjectMouseEntered
-
-    private void tab_subjectMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_subjectMouseExited
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tab_subjectMouseExited
-
     
 
     
@@ -585,8 +547,6 @@ public class StudentDashBoard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
@@ -602,7 +562,7 @@ public class StudentDashBoard extends javax.swing.JFrame {
     private javax.swing.JPanel tab_remark5;
     private javax.swing.JPanel tab_remark6;
     private javax.swing.JPanel tab_remark7;
+    private javax.swing.JPanel tab_remark8;
     private javax.swing.JPanel tab_score;
-    private javax.swing.JPanel tab_subject;
     // End of variables declaration//GEN-END:variables
 }

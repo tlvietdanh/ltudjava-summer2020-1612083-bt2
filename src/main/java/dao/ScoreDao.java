@@ -298,4 +298,31 @@ public class ScoreDao {
         }
         return null;
     }
+
+    public boolean checkScore(String classID, String subjectID, String studentID) {
+        if(classID.length() == 0 || subjectID.length() == 0) {
+            System.out.println("Ma loi ko hop le");
+            return false;
+        }
+        try{
+            scoreSession = HibernateUtil.getSessionFactory().openSession();
+
+            // lay  danh  sach hoc sinh
+            String getListStudent = "Select c from ScoresEntity c, StudentsEntity s where s.studentId = c.studentId and c.studentId='"+studentID+"' and  c.classId='"+classID+"' and c.subjectId='" + subjectID + "'";
+            Query query = scoreSession.createQuery(getListStudent);
+            List<ScoresEntity> listScore = query.getResultList();
+            scoreSession.close();
+
+            if(listScore.size() > 0) {
+                return true;
+            }
+
+            return false;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            scoreSession.close();
+        }
+        return false;
+    }
 }

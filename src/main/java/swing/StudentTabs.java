@@ -5,17 +5,62 @@
  */
 package swing;
 
+import dao.ClassesDao;
+import dao.SpecialStudentDao;
+import model.ClassesEntity;
+import model.StudentsEntity;
+import model.SubjectsEntity;
+
+import javax.swing.*;
+import java.util.List;
+
 /**
  *
  * @author black
  */
 public class StudentTabs extends javax.swing.JPanel {
-
+    final String cancel = "Hủy môn học";
+    final String reStudy = "Đăng ký học lại";
+    ClassesDao classesDao = new ClassesDao();
+    SpecialStudentDao specialStudentDao = new SpecialStudentDao();
+    boolean loading = false;
     /**
      * Creates new form ClassTabs
      */
     public StudentTabs() {
         initComponents();
+        type_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{cancel, reStudy}));
+        initSelectBoxData();
+    }
+
+    void initSelectBoxData() {
+        List<ClassesEntity> classesName = classesDao.getListClass();
+        if(classesName == null) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+            class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            return;
+        }
+        String[] name = new String[classesName.size()];
+        for (int i = 0; i < classesName.size(); i++) {
+            name[i] = classesName.get(i).getClassId();
+        }
+        class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(name));
+        initSubjectData();
+    }
+
+    void initSubjectData() {
+        String classID = (String) class_select_box.getSelectedItem();
+        List<SubjectsEntity> listsubject = classesDao.getListSubject(classID);
+        if(listsubject == null) {
+            JOptionPane.showMessageDialog(null, "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+            subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            return;
+        }
+        String[] subject = new String[listsubject.size()];
+        for (int i = 0; i < listsubject.size(); i++) {
+            subject[i] = listsubject.get(i).getSubjectId();
+        }
+        subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(subject));
     }
 
     /**
@@ -27,18 +72,330 @@ public class StudentTabs extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jSeparator2 = new javax.swing.JSeparator();
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        type_select_box = new javax.swing.JComboBox<>();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        class_select_box = new javax.swing.JComboBox<>();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        subject_select_box = new javax.swing.JComboBox<>();
+        jPanel6 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        edt_studentID = new javax.swing.JTextField();
+        btn_submit = new javax.swing.JButton();
 
-        setLayout(new java.awt.BorderLayout());
+        jPanel1.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Student");
-        add(jLabel1, java.awt.BorderLayout.CENTER);
+        jLabel1.setText("Quản lý sinh viên");
+        jPanel1.add(jLabel1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(jSeparator1, java.awt.BorderLayout.PAGE_END);
+
+        jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel2.setText("Chọn hình thức:");
+
+        type_select_box.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        type_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(type_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(207, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(type_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel3.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel3.setText("Chọn mã lớp:");
+
+        class_select_box.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        class_select_box.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                class_select_boxActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(class_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(227, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(class_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
+        );
+
+        jLabel4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel4.setText("Chọn mã môn:");
+
+        subject_select_box.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(subject_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(227, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(subject_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(25, Short.MAX_VALUE))
+        );
+
+        jLabel5.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel5.setText("Nhập mã số sinh viên:");
+
+        edt_studentID.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        edt_studentID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edt_studentIDActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(0, 230, Short.MAX_VALUE))
+                    .addComponent(edt_studentID))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edt_studentID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        btn_submit.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        btn_submit.setText("Xác nhận");
+        btn_submit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btn_submitMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btn_submit, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addComponent(btn_submit, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(127, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 859, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void edt_studentIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edt_studentIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_edt_studentIDActionPerformed
+
+    class DoSubmit extends Thread  {
+        public void run() {
+            try {
+                String studentID = edt_studentID.getText();
+                String type = (String) type_select_box.getSelectedItem();
+                String classID = (String) class_select_box.getSelectedItem();
+                String subjectID = (String) subject_select_box.getSelectedItem();
+                if(type.equals(cancel)) {
+                    List<StudentsEntity> danhsachlop = classesDao.danhsachmon(classID, subjectID);
+                    boolean check = false;
+                    for (int i = 0; i < danhsachlop.size(); i++) {
+                        StudentsEntity s = danhsachlop.get(i);
+                        if(s.getStudentId().equals(studentID)) {
+                            check = true;
+                            break;
+                        }
+                    }
+                    if(!check) {
+                        loading = false;
+                        edt_studentID.setEnabled(true);
+                        btn_submit.setIcon(null);
+                        JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ, sinh viên không tồn tại trong lớp này!");
+
+                    }
+                    else {
+                        String info = specialStudentDao.requestStudyAgains(studentID, classID, studentID, -1);
+                        loading = false;
+                        edt_studentID.setEnabled(true);
+                        btn_submit.setIcon(null);
+                        JOptionPane.showMessageDialog(null, info);
+                    }
+                }
+                else {
+                    List<StudentsEntity> danhsachlop = classesDao.danhsachmon(classID, subjectID);
+                    boolean check = false;
+                    for (int i = 0; i < danhsachlop.size(); i++) {
+                        StudentsEntity s = danhsachlop.get(i);
+                        if(s.getStudentId().equals(studentID)) {
+                            check = true;
+                            break;
+                        }
+                    }
+                    if(check) {
+                        loading = false;
+                        edt_studentID.setEnabled(true);
+                        btn_submit.setIcon(null);
+                        JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ, sinh viên đã tồn tại trong lớp này!");
+                    }
+                    else {
+                        String info = specialStudentDao.requestStudyAgains(studentID, classID, studentID, 1);
+                        loading = false;
+                        edt_studentID.setEnabled(true);
+                        btn_submit.setIcon(null);
+                        JOptionPane.showMessageDialog(null, info);
+                    }
+                }
+            }catch (Exception e) {
+                loading = false;
+                edt_studentID.setEnabled(true);
+                btn_submit.setIcon(null);
+                JOptionPane.showMessageDialog(null, "Đã có lỗi xảy ra, xin vui lòng thử lại!");
+            }
+        }
+    }
+
+    private void btn_submitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btn_submitMouseClicked
+        // TODO add your handling code here:
+        if(loading) {
+            return;
+        }
+        String studentID = edt_studentID.getText();
+        if(studentID.length() < 7) {
+            JOptionPane.showMessageDialog(null, "Mã số sinh viên không hợp lệ!");
+            return;
+        }
+        loading = true;
+        edt_studentID.setEditable(false);
+        ClassLoader cldr = this.getClass().getClassLoader();
+        java.net.URL imageURL   = cldr.getResource("Rolling-1s-32px.gif");
+        ImageIcon img = new ImageIcon(imageURL);
+        btn_submit.setIcon(img);
+        DoSubmit doSubmit = new DoSubmit();
+        doSubmit.start();
+
+    }//GEN-LAST:event_btn_submitMouseClicked
+
+    private void class_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_class_select_boxActionPerformed
+        // TODO add your handling code here:
+        initSubjectData();
+    }//GEN-LAST:event_class_select_boxActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_submit;
+    private javax.swing.JComboBox<String> class_select_box;
+    private javax.swing.JTextField edt_studentID;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JComboBox<String> subject_select_box;
+    private javax.swing.JComboBox<String> type_select_box;
     // End of variables declaration//GEN-END:variables
 }

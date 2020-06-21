@@ -5,12 +5,17 @@
  */
 package swing;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
 import dao.RemarkEventDao;
 import model.RemarkEntity;
 import model.StudentsEntity;
+import swing.Dialog.CreateRemarkEvent;
+import swing.Dialog.UpdateRemakeStatus;
+
+import javax.swing.*;
 
 /**
  *
@@ -113,10 +118,6 @@ public class RemarkTabs extends javax.swing.JPanel {
                     };
 
                     public boolean isCellEditable(int rowIndex, int columnIndex) {
-                        return canEdit [columnIndex];
-                    }
-
-                    public boolean isResizeable(int rowIndex, int columnIndex) {
                         return canEdit [columnIndex];
                     }
 
@@ -255,15 +256,27 @@ public class RemarkTabs extends javax.swing.JPanel {
 
     private void add_remarkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_add_remarkMouseClicked
         // TODO add your handling code here:
-        
+        CreateRemarkEvent addStudent = new CreateRemarkEvent();
+        addStudent.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        addStudent.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        addStudent.setSize(new Dimension(400, 400));
+        addStudent.setLocationRelativeTo(evt.getComponent().getParent());
+        addStudent.setVisible(true);
     }//GEN-LAST:event_add_remarkMouseClicked
 
     private void add_remarkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_remarkActionPerformed
         // TODO add your handling code here:
+
     }//GEN-LAST:event_add_remarkActionPerformed
 
     private void update_remarkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_update_remarkMouseClicked
         // TODO add your handling code here:
+        UpdateRemakeStatus addStudent = new UpdateRemakeStatus();
+        addStudent.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        addStudent.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        addStudent.setSize(new Dimension(456, 720));
+        addStudent.setLocationRelativeTo(evt.getComponent().getParent());
+        addStudent.setVisible(true);
     }//GEN-LAST:event_update_remarkMouseClicked
 
     private void update_remarkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_remarkActionPerformed
