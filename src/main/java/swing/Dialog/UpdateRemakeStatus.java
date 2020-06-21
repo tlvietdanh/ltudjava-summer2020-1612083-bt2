@@ -5,11 +5,8 @@
  */
 package swing.Dialog;
 
-import dao.ClassesDao;
 import dao.RemarkEventDao;
-import model.ClassesEntity;
 import model.RemarkEntity;
-import model.ScoresEntity;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,18 +19,26 @@ import java.util.List;
  */
 public class UpdateRemakeStatus extends javax.swing.JDialog {
     boolean loading = false;
-    final String GK = "Đã cập nhật";
-    final String CK = "Đã từ chối";
+    final String GK1 = "Đã cập nhật";
+    final String CK1 = "Đã từ chối";
     Container f = this;
     RemarkEventDao remarkEventDao = new RemarkEventDao();
     int status = 1;
+    int type = -1;
+    boolean notLoadData = true;
+    final String GK = "Điểm giữa kỳ";
+    final String CK = "Điểm cuối kỳ";
+    final String OTHER = "Điểm Khác";
+    final String TOTAL = "Điểm Tổng";
     /**
      * Creates new form UpdateRemakeStatus
      */
     public UpdateRemakeStatus() {
 
         initComponents();
-        status_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{GK, CK}));
+        status_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{GK1, CK1}));
+        score_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"",GK, CK, OTHER, TOTAL}));
+
         initSelectBoxData();
 
     }
@@ -108,6 +113,8 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
         jPanel10 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         student_select_box = new javax.swing.JComboBox<>();
+        jLabel10 = new javax.swing.JLabel();
+        score_select_box = new javax.swing.JComboBox<>();
         jPanel11 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         edt_name = new javax.swing.JTextField();
@@ -248,6 +255,17 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
             }
         });
 
+        jLabel10.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel10.setText("Chọn cột điểm:");
+
+        score_select_box.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        score_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        score_select_box.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                score_select_boxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
         jPanel10Layout.setHorizontalGroup(
@@ -255,17 +273,26 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(student_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(student_select_box, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(score_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel8)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel10))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(student_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(student_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(score_select_box, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -490,7 +517,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
                 String subjectID = (String) subject_select_box.getSelectedItem();
                 String studentID = (String) student_select_box.getSelectedItem();
                 String info = "";
-                info = remarkEventDao.updateRemarkStatus(classID, subjectID, studentID, status);
+                info = remarkEventDao.updateRemarkStatus(classID, subjectID, studentID, status, type);
 
                 btn_submit.setIcon(null);
                 loading = false;
@@ -510,7 +537,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
         String classID = (String) class_select_box.getSelectedItem();
         String subjectID = (String) subject_select_box.getSelectedItem();
 
-        if( studentID.equals("") || classID.equals("") || subjectID.equals("")) {
+        if( studentID.equals("") || classID.equals("") || subjectID.equals("") || type == -1 || notLoadData) {
             JOptionPane.showMessageDialog(f, "Dữ liệu không hợp lệ!");
             return;
         }
@@ -536,15 +563,28 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
             edt_column.setText("");
             edt_new_score.setText("");
             edt_reason.setText("");
+            notLoadData = true;
             return;
         }
+        getData(studentID);
+
+    }//GEN-LAST:event_student_select_boxActionPerformed
+
+    void getData(String studentID) {
         String classID = (String) class_select_box.getSelectedItem();
         String subjectID = (String) subject_select_box.getSelectedItem();
-        if( studentID.equals("") || classID.equals("") || subjectID.equals("")) {
+        if( studentID.equals("") || classID.equals("") || subjectID.equals("") || type == -1) {
             return;
         }
-        List remarkData = remarkEventDao.getRemark(classID,subjectID, studentID);
-
+        List remarkData = remarkEventDao.getRemark(classID,subjectID, studentID, type);
+        if(remarkData == null || remarkData.size() == 0) {
+            edt_name.setText("");
+            edt_column.setText("");
+            edt_new_score.setText("");
+            edt_reason.setText("");
+            notLoadData = true;
+            return;
+        }
 
         Iterator itr = remarkData.iterator();
         int i = 0;
@@ -556,7 +596,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
             edt_name.setText(name);
             edt_reason.setText(r.getReason());
             edt_new_score.setText(r.getNewScore() + "");
-
+            type = r.getType();
             switch (r.getType()) {
                 case 0:
                     edt_column.setText("Điểm giữa kỳ");
@@ -574,7 +614,8 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
 
             i++;
         }
-    }//GEN-LAST:event_student_select_boxActionPerformed
+        notLoadData = false;
+    }
 
     private void edt_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edt_nameActionPerformed
         // TODO add your handling code here:
@@ -587,7 +628,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
     private void status_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_status_select_boxActionPerformed
         // TODO add your handling code here:
         String selectStatus = (String) status_select_box.getSelectedItem();
-        if(selectStatus.equals(GK)) {
+        if(selectStatus.equals(GK1)) {
             status = 1;
         }
         else {
@@ -604,6 +645,36 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_edt_reasonActionPerformed
 
+    private void score_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_score_select_boxActionPerformed
+        // TODO add your handling code here:
+        if(loading) {
+            return;
+        }
+        String selected = (String) score_select_box.getSelectedItem();
+        String studentID = (String) student_select_box.getSelectedItem();
+
+        if(!selected.equals("")) {
+            if(selected.equals(GK)) {
+                type = 0;
+            }
+            else if(selected.equals(CK)) {
+                type = 1;
+            }
+            else if(selected.equals(OTHER)) {
+                type = 2;
+            }
+            else {
+                type = 3;
+            }
+        }
+        else {
+            type = -1;
+        }
+        if(!studentID.equals("") && type != -1) {
+            getData(studentID);
+        }
+    }//GEN-LAST:event_score_select_boxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_submit;
@@ -613,6 +684,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
     private javax.swing.JTextField edt_new_score;
     private javax.swing.JTextField edt_reason;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
@@ -632,6 +704,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JComboBox<String> score_select_box;
     private javax.swing.JComboBox<String> status_select_box;
     private javax.swing.JComboBox<String> student_select_box;
     private javax.swing.JComboBox<String> subject_select_box;

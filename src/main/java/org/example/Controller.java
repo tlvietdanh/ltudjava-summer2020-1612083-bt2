@@ -90,6 +90,7 @@ public class Controller {
         //</editor-fold>
         // ClassTabs c = new ClassTabs();
         /* Create and display the form */
+
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 handleLogin();

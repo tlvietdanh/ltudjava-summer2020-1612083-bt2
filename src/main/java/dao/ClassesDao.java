@@ -12,10 +12,7 @@ import org.hibernate.query.Query;
 import util.HibernateUtil;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.SubjectsEntity;
@@ -64,8 +61,12 @@ public class ClassesDao<T> {
                 if(!checkCSVData(csvFile, delimeter)){
                     return CLASSES_ERROR_FILE;
                 }
+
+
                 BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFile));
-                String row = bufferedReader.readLine();
+                Scanner scan = new Scanner(csvFile);
+                // String row = bufferedReader.readLine();
+                String row = scan.next();
 
                 while (row != null) {
                     String data[] = row.split(delimeter);
@@ -134,6 +135,7 @@ public class ClassesDao<T> {
             transaction.commit();
             classesSession.close();
         } catch (Exception e) {
+            classesSession.close();
             return CLASSES_ERROR;
         }
         return CLASSES_SUCCESS;
@@ -156,6 +158,7 @@ public class ClassesDao<T> {
             classesSession.close();
             return listStudent;
         } catch (Exception e) {
+            classesSession.close();
             e.printStackTrace();
         }
         return null;
@@ -238,6 +241,7 @@ public class ClassesDao<T> {
             return result;
 
         } catch (Exception e) {
+            classesSession.close();
             e.printStackTrace();
         }
         return null;
@@ -253,6 +257,7 @@ public class ClassesDao<T> {
             return result;
 
         } catch (Exception e) {
+            classesSession.close();
             e.printStackTrace();
         }
         return null;
@@ -297,6 +302,7 @@ public class ClassesDao<T> {
 
         } catch (Exception e) {
             e.printStackTrace();
+            classesSession.close();
         }
         return null;
     }

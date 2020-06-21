@@ -9,6 +9,8 @@ import dao.AccountsDao;
 import model.AccountsEntity;
 import org.example.Controller;
 import org.example.User;
+import org.hibernate.Session;
+import util.HibernateUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,8 +32,20 @@ public class Login extends javax.swing.JFrame {
         password.setHorizontalAlignment(JTextField.LEFT);
         this.setLocationRelativeTo(null);
         // create 2 term account
-        AccountsDao.createAccount("giaovu", "giaovu", 1);
-        AccountsDao.createAccount("1842001", "1842001", 0);
+
+        TestConnection();
+
+    }
+
+    void TestConnection() {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            session.close();
+
+        }catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Không thể kết nối với cở sở dữ liệu. Xin vui lòng  chạy script sql và kiểm tra lại file .env!");
+            Runtime.getRuntime().exit(1);
+        }
     }
 
     /**

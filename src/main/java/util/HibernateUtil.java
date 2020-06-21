@@ -6,6 +6,8 @@ import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
+import io.github.cdimascio.dotenv.Dotenv;
+
 
 import java.util.Properties;
 
@@ -18,8 +20,12 @@ public class HibernateUtil {
         configuration.configure("hibernate.cfg.xml");
         Properties settings = new Properties();
 
-        settings.put(Environment.USER, "root");
-        settings.put(Environment.PASS, "13101998");
+        Dotenv dotenv = Dotenv.load();
+        String username = dotenv.get("USERNAME_DATABASE");
+        String password = dotenv.get("PASSWORD");
+
+        settings.put(Environment.USER, username != null ? username : "root");
+        settings.put(Environment.PASS, password != null ? password : "13101998");
 
         configuration.addProperties(settings);
         configuration.addAnnotatedClass(AccountsEntity.class);

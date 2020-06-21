@@ -23,7 +23,7 @@ public class StudentDashBoard extends javax.swing.JFrame {
     RemarkStudentTabs remarkTabs = new RemarkStudentTabs();
     ChangePasswordTabs changePasswordTabs = new ChangePasswordTabs();
 
-    JPanel[] listComponentPanel = new JPanel[] { scoresTabs, remarkTabs, changePasswordTabs};
+    JPanel[] listComponentPanel;
     JPanel[] listTabPanel;
 
     
@@ -51,6 +51,11 @@ public class StudentDashBoard extends javax.swing.JFrame {
     }
     
     private void initTabComponent() {
+        scoresTabs = new ScoresTabs();
+        remarkTabs = new RemarkStudentTabs();
+        changePasswordTabs = new ChangePasswordTabs();
+
+        listComponentPanel = new JPanel[] { scoresTabs, remarkTabs, changePasswordTabs};
         this.currentTabs = "tab_score";
         resetAllColor(tab_score);
         
@@ -90,6 +95,12 @@ public class StudentDashBoard extends javax.swing.JFrame {
             else {
                 p.setVisible(false);
             }
+        }
+
+        switch (currentTabs) {
+            case "tab_score":
+                scoresTabs.initData();
+                break;
         }
     }
     
@@ -437,10 +448,10 @@ public class StudentDashBoard extends javax.swing.JFrame {
 
     private void tab_scoreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_scoreMouseClicked
         // TODO add your handling code here:
+        this.currentTabs = "tab_score";
         setVisibleTabs(scoresTabs);
         setColor(tab_score);
         resetAllColor(tab_score);
-        this.currentTabs = "tab_score";
         pack();
     }//GEN-LAST:event_tab_scoreMouseClicked
 
@@ -462,10 +473,10 @@ public class StudentDashBoard extends javax.swing.JFrame {
 
     private void tab_remarkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_remarkMouseClicked
         // TODO add your handling code here:
+        this.currentTabs = "tab_remark";
         setVisibleTabs(remarkTabs);
         setColor(tab_remark);
         resetAllColor(tab_remark);
-        this.currentTabs = "tab_remark";
         pack();
     }//GEN-LAST:event_tab_remarkMouseClicked
 
@@ -487,10 +498,10 @@ public class StudentDashBoard extends javax.swing.JFrame {
 
     private void tab_change_passwordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tab_change_passwordMouseClicked
         // TODO add your handling code here:
-         setVisibleTabs(changePasswordTabs);
+        this.currentTabs = "tab_change_password";
+        setVisibleTabs(changePasswordTabs);
         setColor(tab_change_password);
         resetAllColor(tab_change_password);
-        this.currentTabs = "tab_change_password";
         pack();
     }//GEN-LAST:event_tab_change_passwordMouseClicked
 

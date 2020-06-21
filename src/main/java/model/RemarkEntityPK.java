@@ -8,6 +8,7 @@ public class RemarkEntityPK implements Serializable {
     private String subjectId;
     private String studentId;
     private String classId;
+    private Integer type;
 
     @Column(name = "subjectID")
     @Id
@@ -39,6 +40,16 @@ public class RemarkEntityPK implements Serializable {
         this.classId = classId;
     }
 
+    @Column(name = "type")
+    @Id
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,6 +60,7 @@ public class RemarkEntityPK implements Serializable {
         if (subjectId != null ? !subjectId.equals(that.subjectId) : that.subjectId != null) return false;
         if (studentId != null ? !studentId.equals(that.studentId) : that.studentId != null) return false;
         if (classId != null ? !classId.equals(that.classId) : that.classId != null) return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
 
         return true;
     }
@@ -58,6 +70,7 @@ public class RemarkEntityPK implements Serializable {
         int result = subjectId != null ? subjectId.hashCode() : 0;
         result = 31 * result + (studentId != null ? studentId.hashCode() : 0);
         result = 31 * result + (classId != null ? classId.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 }

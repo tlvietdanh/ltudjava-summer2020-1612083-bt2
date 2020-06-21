@@ -2,7 +2,6 @@ package dao;
 
 import model.RemarkEntity;
 import model.RemarkeventEntity;
-import model.SubjectsEntity;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -61,13 +60,15 @@ public class RemarkEventDao {
 
             remarkEventSession.close();
 
-            return "Tạo thành xông";
+            return "Tạo thành công!";
         } catch (ParseException e) {
             e.printStackTrace();
+            remarkEventSession.close();
             System.out.println("Invalid Date");
             return "Dữ liệu không hợp lệ";
         } catch (Exception e) {
             e.printStackTrace();
+            remarkEventSession.close();
             return "Hệ thống đang có lỗi, xin thử lại sau!";
         }
     }
@@ -86,7 +87,7 @@ public class RemarkEventDao {
         try {
             remarkEventSession = HibernateUtil.getSessionFactory().openSession();
 
-            String hql = "select r from RemarkEntity r where r.classId = '"+ classID +"' and r.subjectId='"+subjectID+"' and r.studentId='"+ studentID +"'";
+            String hql = "select r from RemarkEntity r where r.type="+type+" and r.classId = '"+ classID +"' and r.subjectId='"+subjectID+"' and r.studentId='"+ studentID +"'";
             Query query = remarkEventSession.createQuery(hql);
             List<RemarkEntity> list = query.getResultList();
             if(list.size() > 0) {
@@ -125,7 +126,7 @@ public class RemarkEventDao {
 
             String sb = "select e from RemarkeventEntity e where e.startTime <= :date and e.endTime >= :date";
             Query query = remarkEventSession.createQuery(sb);
-            query.setTimestamp("date", mDate);
+            query.setParameter("date", mDate);
 
             List<RemarkeventEntity> result = query.getResultList();
             if(result.size() > 0) {
@@ -161,7 +162,7 @@ public class RemarkEventDao {
         try {
             remarkEventSession = HibernateUtil.getSessionFactory().openSession();
 
-            String hql = "select r from RemarkEntity r";
+            String hql = "select r from RemarkEntity r group by r.classId";
             Query query = remarkEventSession.createQuery(hql);
             List<RemarkEntity> list = query.getResultList();
 
@@ -183,7 +184,7 @@ public class RemarkEventDao {
         try {
             remarkEventSession = HibernateUtil.getSessionFactory().openSession();
 
-            String hql = "select r from RemarkEntity r where r.classId = '"+ classId +"'";
+            String hql = "select r from RemarkEntity r where r.classId = '"+ classId +"' group by r.subjectId";
             Query query = remarkEventSession.createQuery(hql);
             List<RemarkEntity> list = query.getResultList();
 
@@ -204,7 +205,7 @@ public class RemarkEventDao {
         try {
             remarkEventSession = HibernateUtil.getSessionFactory().openSession();
 
-            String hql = "select r from RemarkEntity r where r.classId = '"+ classId +"' and r.subjectId='"+subjectID+"'";
+            String hql = "select r from RemarkEntity r where r.classId = '"+ classId +"' and r.subjectId='"+subjectID+"' group by r.studentId";
             Query query = remarkEventSession.createQuery(hql);
             List<RemarkEntity> list = query.getResultList();
 
@@ -221,11 +222,11 @@ public class RemarkEventDao {
         return null;
     }
 
-    public List getRemark(String classID, String subjectID, String studentID) {
+    public List getRemark(String classID, String subjectID, String studentID, int type) {
         try {
             remarkEventSession = HibernateUtil.getSessionFactory().openSession();
 
-            String hql = "select r, s.name, c.name from RemarkEntity r, StudentsEntity s, SubjectsEntity c where s.studentId = r.studentId and c.subjectId=r.subjectId and r.classId = '"+ classID +"' and r.subjectId='"+subjectID+"' and r.studentId='"+ studentID +"'";
+            String hql = "select r, s.name, c.name from RemarkEntity r, StudentsEntity s, SubjectsEntity c where r.type="+type+" and s.studentId = r.studentId and c.subjectId=r.subjectId and r.classId = '"+ classID +"' and r.subjectId='"+subjectID+"' and r.studentId='"+ studentID +"' group by r.studentId";
             Query query = remarkEventSession.createQuery(hql);
             List list = query.getResultList();
             remarkEventSession.close();
@@ -240,11 +241,11 @@ public class RemarkEventDao {
         return null;
     }
 
-    public String updateRemarkStatus(String classID, String subjectID, String studentID, int status) {
+    public String updateRemarkStatus(String classID, String subjectID, String studentID, int status, int type) {
         try {
             remarkEventSession = HibernateUtil.getSessionFactory().openSession();
 
-            String hql = "select r from RemarkEntity r  where r.classId='"+classID+"' and r.subjectId='"+subjectID+"' and r.studentId='"+studentID+"'";
+            String hql = "select r from RemarkEntity r  where r.type="+type+" and r.classId='"+classID+"' and r.subjectId='"+subjectID+"' and r.studentId='"+studentID+"'";
             Query query = remarkEventSession.createQuery(hql);
             List<RemarkEntity> result = query.getResultList();
 

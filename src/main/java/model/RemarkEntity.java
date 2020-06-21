@@ -65,7 +65,7 @@ public class RemarkEntity {
         this.reason = reason;
     }
 
-    @Basic
+    @Id
     @Column(name = "type")
     public Integer getType() {
         return type;

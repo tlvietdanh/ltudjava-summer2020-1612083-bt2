@@ -101,6 +101,7 @@ public class SchedulesDao {
             transaction.commit();
             scheduleSession.close();
         } catch (Exception e) {
+            scheduleSession.close();
             return false;
         }
         return true;
@@ -125,6 +126,7 @@ public class SchedulesDao {
             return schedule;
         } catch (Exception e) {
             e.printStackTrace();
+            scheduleSession.close();
         }
 
         return null;
@@ -140,6 +142,7 @@ public class SchedulesDao {
             return result;
 
         } catch (Exception e) {
+            scheduleSession.close();
             e.printStackTrace();
         }
         return null;

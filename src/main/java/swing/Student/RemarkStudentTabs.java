@@ -47,9 +47,9 @@ public class RemarkStudentTabs extends javax.swing.JPanel {
 
     void initSelectBoxData() {
         List<String> classesName = scoreDao.getListClassOfStudent(Controller.user.username);
-        if(classesName == null) {
-            JOptionPane.showMessageDialog(null, "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(classesName == null || classesName.size() == 0) {
             class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            initSubjectData();
             return;
         }
         String[] name = new String[classesName.size()];
@@ -61,8 +61,7 @@ public class RemarkStudentTabs extends javax.swing.JPanel {
     void initSubjectData() {
         String classID = (String) class_select_box.getSelectedItem();
         List<String> listsubject = scoreDao.getListSubjectOfStudent(Controller.user.username, classID);
-        if(listsubject == null) {
-            JOptionPane.showMessageDialog(null, "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(listsubject == null || classID == null || classID.equals("")) {
             subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
             return;
         }
@@ -377,7 +376,9 @@ public class RemarkStudentTabs extends javax.swing.JPanel {
         }
         String newScore = edt_newScore.getText();
         String reason = edt_reason.getText();
-        if(reason.length()==0 || field == -1) {
+        String classID = (String) class_select_box.getSelectedItem();
+        String subjectID = (String) subject_select_box.getSelectedItem();
+        if(reason.length()==0 || field == -1 || classID.equals("") || subjectID.equals("")) {
             JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ!");
             return;
         }

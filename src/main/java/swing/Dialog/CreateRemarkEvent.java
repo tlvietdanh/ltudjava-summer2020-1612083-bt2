@@ -5,18 +5,12 @@
  */
 package swing.Dialog;
 
-import dao.ClassesDao;
 import dao.RemarkEventDao;
-import model.ClassesEntity;
-import model.RemarkEntity;
-import model.ScoresEntity;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

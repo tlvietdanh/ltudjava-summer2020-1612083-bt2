@@ -61,13 +61,16 @@ public class ScoreDao {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Da xay ra loi trong qua trinh doc file");
+                scoreSession.close();
                 return SCORE_ERROR_FILE;
             } catch (IOException e) {
                 System.out.println("Da xay ra loi trong qua trinh doc file");
                 e.printStackTrace();
+                scoreSession.close();
                 return SCORE_ERROR_FILE;
             } catch (Exception e) {
                 e.printStackTrace();
+                scoreSession.close();
                 return SCORE_ERROR_FILE;
             }
         }
@@ -194,6 +197,7 @@ public class ScoreDao {
             return finalResult;
         } catch (Exception e) {
             e.printStackTrace();
+            scoreSession.close();
         }
         return null;
     }
@@ -215,6 +219,7 @@ public class ScoreDao {
 
         } catch (Exception e) {
             e.printStackTrace();
+            scoreSession.close();
         }
         return null;
     }
@@ -252,6 +257,7 @@ public class ScoreDao {
 
         } catch (Exception e) {
             e.printStackTrace();
+            scoreSession.close();
         }
         return null;
     }
@@ -295,6 +301,7 @@ public class ScoreDao {
 
         } catch (Exception e) {
             e.printStackTrace();
+            scoreSession.close();
         }
         return null;
     }

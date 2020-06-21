@@ -32,7 +32,7 @@ public class SpecialStudentDao {
             specialSession.close();
             return "Thêm thành công!";
         }catch (Exception e) {
-
+            e.printStackTrace();
         }
         specialSession.close();
         return "Đã có lỗi xảy ra, xin vui lòng thử lại!";

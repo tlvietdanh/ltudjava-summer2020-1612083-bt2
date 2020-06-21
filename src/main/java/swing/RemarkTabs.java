@@ -12,8 +12,8 @@ import java.util.List;
 import dao.RemarkEventDao;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import model.RemarkEntity;
-import model.StudentsEntity;
 import swing.Dialog.CreateRemarkEvent;
 import swing.Dialog.UpdateRemakeStatus;
 
