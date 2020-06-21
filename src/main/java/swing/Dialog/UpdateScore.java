@@ -46,6 +46,11 @@ public class UpdateScore extends javax.swing.JDialog {
     
     void initSelectBoxData() {
         List<ClassesEntity> classesName = classesDao.getListClass();
+        if(classesName == null || classesName.size() == 0) {
+            class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{""}));
+            initSubjectData();
+            return;
+        }
         String[] name = new String[classesName.size()];
         for (int i = 0; i < classesName.size(); i++) {
             name[i] = classesName.get(i).getClassId();
@@ -57,9 +62,9 @@ public class UpdateScore extends javax.swing.JDialog {
     void initSubjectData() {
         String classID = (String) class_select_box.getSelectedItem();
         List<String> listsubject = scoreDao.getListSubject(classID);
-        if(listsubject == null) {
-            JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(classID == null || classID.equals("") || listsubject == null || listsubject.size() == 0) {
             subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            initStudentData();
             return;
         }
         String[] subject = new String[listsubject.size()];
@@ -71,9 +76,12 @@ public class UpdateScore extends javax.swing.JDialog {
     void initStudentData() {
         String classID = (String) class_select_box.getSelectedItem();
         String subjectID = (String) subject_select_box.getSelectedItem();
+        if(classID == null || classID.equals("") || subjectID == null || subjectID.equals("")) {
+            student_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{""}));
+            return;
+        }
         listStudent = classesDao.danhsachmon(classID, subjectID);
-        if(listStudent == null) {
-            JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(listStudent == null || listStudent.size() == 0) {
             student_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
             return;
         }
@@ -475,8 +483,11 @@ public class UpdateScore extends javax.swing.JDialog {
 
         String studentID = (String) student_select_box.getSelectedItem();
         String scoreField = (String) score_select_box.getSelectedItem();
+        String classID = (String) class_select_box.getSelectedItem();
+        String subjectID = (String) subject_select_box.getSelectedItem();
 
-        if(newScore.length() == 0 || studentID.equals("") || scoreField.equals("")) {
+        if(classID==null || studentID == null || subjectID == null || newScore.length() == 0 || studentID.equals("")
+                || scoreField.equals("") || classID.equals("") || subjectID.equals("")) {
             JOptionPane.showMessageDialog(evt.getComponent().getParent().getParent(), "Dữ liệu không hợp lệ!");
             return;
         }

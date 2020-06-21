@@ -41,9 +41,9 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
     void initSelectBoxData() {
         List<String> classesName = remarkEventDao.getListClass();
         String[] name = new String[classesName.size()];
-        if(classesName == null) {
-            JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(classesName == null || classesName.size() == 0) {
             class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            initSubjectData();
             return;
         }
         classesName.toArray(name);
@@ -54,9 +54,9 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
     void initSubjectData() {
         String classID = (String) class_select_box.getSelectedItem();
         List<String> listsubject = remarkEventDao.getListSubject(classID);
-        if(listsubject == null) {
-            JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(listsubject == null || classID == null || classID.equals("") || listsubject.size() == 0) {
             subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
+            initStudentData();
             return;
         }
         String[] subject = new String[listsubject.size()];
@@ -70,8 +70,7 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
         String classID = (String) class_select_box.getSelectedItem();
         String subjectID = (String) subject_select_box.getSelectedItem();
         List<String> listStudent = remarkEventDao.getListStudent(classID, subjectID);
-        if(listStudent == null) {
-            JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đang có lỗi, xin vui lòng thử lại!");
+        if(listStudent == null || subjectID == null || classID == null || classID.equals("") || subjectID.equals("") || listStudent.size() == 0) {
             student_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
             return;
         }
@@ -508,8 +507,10 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
             return;
         }
         String studentID = (String) student_select_box.getSelectedItem();
+        String classID = (String) class_select_box.getSelectedItem();
+        String subjectID = (String) subject_select_box.getSelectedItem();
 
-        if( studentID.equals("")) {
+        if( studentID.equals("") || classID.equals("") || subjectID.equals("")) {
             JOptionPane.showMessageDialog(f, "Dữ liệu không hợp lệ!");
             return;
         }
@@ -539,7 +540,9 @@ public class UpdateRemakeStatus extends javax.swing.JDialog {
         }
         String classID = (String) class_select_box.getSelectedItem();
         String subjectID = (String) subject_select_box.getSelectedItem();
-
+        if( studentID.equals("") || classID.equals("") || subjectID.equals("")) {
+            return;
+        }
         List remarkData = remarkEventDao.getRemark(classID,subjectID, studentID);
 
 

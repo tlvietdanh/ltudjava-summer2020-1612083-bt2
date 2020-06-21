@@ -19,14 +19,11 @@ import org.example.Controller;
  */
 public class StudentDashBoard extends javax.swing.JFrame {
     // tab components
-    ClassTabs classTabs = new ClassTabs();
-    ScheduleTabs scheduleTabs = new ScheduleTabs();
-    StudentTabs studentTabs = new StudentTabs();
     ScoresTabs scoresTabs = new ScoresTabs();
     RemarkStudentTabs remarkTabs = new RemarkStudentTabs();
     ChangePasswordTabs changePasswordTabs = new ChangePasswordTabs();
 
-    JPanel[] listComponentPanel = new JPanel[] { studentTabs, scoresTabs, remarkTabs, changePasswordTabs};
+    JPanel[] listComponentPanel = new JPanel[] { scoresTabs, remarkTabs, changePasswordTabs};
     JPanel[] listTabPanel;
 
     

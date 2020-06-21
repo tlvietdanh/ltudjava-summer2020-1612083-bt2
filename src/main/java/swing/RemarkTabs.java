@@ -10,6 +10,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import dao.RemarkEventDao;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import model.RemarkEntity;
 import model.StudentsEntity;
 import swing.Dialog.CreateRemarkEvent;
@@ -31,6 +33,8 @@ public class RemarkTabs extends javax.swing.JPanel {
                             "Lý do",
                             "Trạng thái"};
     RemarkEventDao rkd = new RemarkEventDao();
+    Container f = this;
+    boolean loading = false;
     /**
      * Creates new form ClassTabs
      */
@@ -44,7 +48,7 @@ public class RemarkTabs extends javax.swing.JPanel {
             columnNames
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false, false
             };
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
@@ -61,7 +65,7 @@ public class RemarkTabs extends javax.swing.JPanel {
             { 
                 List remarkData = rkd.getListRemark();
 
-                if(remarkData == null) {
+                if(remarkData == null || remarkData.size() == 0) {
                     return;
                 }
                 
@@ -107,8 +111,6 @@ public class RemarkTabs extends javax.swing.JPanel {
                     }
                     i++;
                 }
-
-
                 table_class.setModel(new javax.swing.table.DefaultTableModel(
                     data,
                     columnNames
@@ -126,14 +128,18 @@ public class RemarkTabs extends javax.swing.JPanel {
 
             } 
             catch (Exception e) 
-            { 
+            {
+                e.printStackTrace();
                 // Throwing an exception 
-                System.out.println ("Exception is caught"); 
+                System.out.println ("Exception is caught");
+                loading_conponent.setVisible(false);
+                JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đã xảy ra lỗi, xin vui lỏng thử lại sau!");
             } 
         } 
     }
     
     void initTableData() {
+        loading_conponent.setVisible(true);
         GetTableData getTableData = new GetTableData();
         getTableData.start();
     }
@@ -218,39 +224,39 @@ public class RemarkTabs extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(update_remark)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(add_remark))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(update_remark)
+                                .addGap(394, 394, 394)
+                                .addComponent(add_remark))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, 0)
                         .addComponent(loading_conponent)))
                 .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap()))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(90, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(add_remark, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(update_remark, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(update_remark)
+                    .addComponent(add_remark))
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(loading_conponent, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 520, Short.MAX_VALUE)))
+                .addComponent(loading_conponent)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -259,7 +265,7 @@ public class RemarkTabs extends javax.swing.JPanel {
         CreateRemarkEvent addStudent = new CreateRemarkEvent();
         addStudent.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         addStudent.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        addStudent.setSize(new Dimension(400, 400));
+        addStudent.setSize(new Dimension(350, 400));
         addStudent.setLocationRelativeTo(evt.getComponent().getParent());
         addStudent.setVisible(true);
     }//GEN-LAST:event_add_remarkMouseClicked
@@ -271,12 +277,26 @@ public class RemarkTabs extends javax.swing.JPanel {
 
     private void update_remarkMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_update_remarkMouseClicked
         // TODO add your handling code here:
+        List remarkData = rkd.getListRemark();
+
+        if(remarkData == null || remarkData.size() == 0) {
+            JOptionPane.showMessageDialog(f.getParent(), "Không có phúc khảo đang mở!");
+            return;
+        }
+
         UpdateRemakeStatus addStudent = new UpdateRemakeStatus();
         addStudent.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         addStudent.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         addStudent.setSize(new Dimension(456, 720));
         addStudent.setLocationRelativeTo(evt.getComponent().getParent());
         addStudent.setVisible(true);
+         addStudent.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosed(WindowEvent e)
+            {
+                initTableData();
+            }
+        });
     }//GEN-LAST:event_update_remarkMouseClicked
 
     private void update_remarkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_remarkActionPerformed

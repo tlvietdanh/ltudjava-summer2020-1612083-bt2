@@ -8,6 +8,7 @@ import dao.AccountsDao;
 import dao.ClassesDao;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +26,13 @@ import org.example.Controller;
 public class ChangePasswordTabs extends JPanel {
     
     AccountsDao accountsDao = new AccountsDao();
+    Container f = this;
+    boolean loading = false;
     /**
      * Creates new form ClassTabs
      */
     public ChangePasswordTabs() {
         initComponents();
-        
-       
-       
     }
     
    
@@ -202,8 +202,36 @@ public class ChangePasswordTabs extends JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    class ChangePassword extends Thread {
+        public void run() {
+            try {
+                String newPass = new String(newPassEdt.getPassword());
+                String oldPass = new String(oldPassEdt.getPassword());
+
+
+                String info = accountsDao.changePassword(Controller.user.getUsername(), oldPass, newPass);
+                if(info.equals("Thay đổi mật khẩu thành công!")) {
+                    newPassEdt.setText("");
+                    ConfirmEdt.setText("");
+                    oldPassEdt.setText("");
+                }
+                jButton1.setIcon(null);
+                loading = false;
+                JOptionPane.showMessageDialog(f.getParent().getParent(), info);
+            }catch (Exception e) {
+                e.printStackTrace();
+                jButton1.setIcon(null);
+                loading = false;
+                JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đã xảy ra lỗi, xin vui lỏng thử lại sau!");
+
+            }
+
+        }
+    }
+
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
+        if(loading) return;
         String newPass = new String(newPassEdt.getPassword());
         String confirm = new String(ConfirmEdt.getPassword());
         String oldPass = new String(oldPassEdt.getPassword());
@@ -215,14 +243,19 @@ public class ChangePasswordTabs extends JPanel {
             JOptionPane.showMessageDialog(evt.getComponent().getParent().getParent(), "Mật khẩu mới không khớp!");
             return;
         }
-        
-        String info = accountsDao.changePassword(Controller.user.getUsername(), oldPass, newPass);
-        if(info.equals("Thay đổi mật khẩu thành công!")) {
-            newPassEdt.setText("");
-            ConfirmEdt.setText("");
-            oldPassEdt.setText("");
+        if(newPass.equals(oldPass)) {
+            JOptionPane.showMessageDialog(evt.getComponent().getParent().getParent(), "Mật khẩu mới trùng với mật khẩu cũ!");
+            return;
         }
-        JOptionPane.showMessageDialog(evt.getComponent().getParent().getParent(), info);
+
+        ClassLoader cldr = this.getClass().getClassLoader();
+        java.net.URL imageURL   = cldr.getResource("Rolling-1s-24px.gif");
+        ImageIcon img = new ImageIcon(imageURL);
+        jButton1.setIcon(img);
+        loading = true;
+        ChangePassword changePassword = new ChangePassword();
+        changePassword.start();
+
 
     }//GEN-LAST:event_jButton1MouseClicked
 

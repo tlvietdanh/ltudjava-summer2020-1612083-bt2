@@ -12,6 +12,7 @@ import model.StudentsEntity;
 import model.SubjectsEntity;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,9 @@ public class StudentTabs extends javax.swing.JPanel {
     public StudentTabs() {
         initComponents();
         type_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{cancel, reStudy}));
+    }
+
+    public void initData() {
         initSelectBoxData();
     }
 
@@ -50,7 +54,11 @@ public class StudentTabs extends javax.swing.JPanel {
 
     void initSubjectData() {
         String classID = (String) class_select_box.getSelectedItem();
-        List<SubjectsEntity> listsubject = classesDao.getListSubject(classID);
+
+        List<SubjectsEntity> listsubject = new ArrayList<>();
+        if(classID != null) {
+            listsubject = classesDao.getListSubject(classID);
+        }
         if(listsubject == null) {
             JOptionPane.showMessageDialog(null, "Hệ thống đang có lỗi, xin vui lòng thử lại!");
             subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {""}));
@@ -305,16 +313,18 @@ public class StudentTabs extends javax.swing.JPanel {
                     }
                     if(!check) {
                         loading = false;
-                        edt_studentID.setEnabled(true);
+                        edt_studentID.setEditable(true);
                         btn_submit.setIcon(null);
+                        edt_studentID.setText("");
                         JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ, sinh viên không tồn tại trong lớp này!");
 
                     }
                     else {
-                        String info = specialStudentDao.requestStudyAgains(studentID, classID, studentID, -1);
+                        String info = specialStudentDao.requestStudyAgains(studentID, classID, subjectID, -1);
                         loading = false;
-                        edt_studentID.setEnabled(true);
+                        edt_studentID.setEditable(true);
                         btn_submit.setIcon(null);
+                        edt_studentID.setText("");
                         JOptionPane.showMessageDialog(null, info);
                     }
                 }
@@ -330,22 +340,25 @@ public class StudentTabs extends javax.swing.JPanel {
                     }
                     if(check) {
                         loading = false;
-                        edt_studentID.setEnabled(true);
+                        edt_studentID.setEditable(true);
+                        edt_studentID.setText("");
                         btn_submit.setIcon(null);
                         JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ, sinh viên đã tồn tại trong lớp này!");
                     }
                     else {
-                        String info = specialStudentDao.requestStudyAgains(studentID, classID, studentID, 1);
+                        String info = specialStudentDao.requestStudyAgains(studentID, classID, subjectID, 1);
                         loading = false;
-                        edt_studentID.setEnabled(true);
+                        edt_studentID.setEditable(true);
+                        edt_studentID.setText("");
                         btn_submit.setIcon(null);
                         JOptionPane.showMessageDialog(null, info);
                     }
                 }
             }catch (Exception e) {
                 loading = false;
-                edt_studentID.setEnabled(true);
+                edt_studentID.setEditable(true);
                 btn_submit.setIcon(null);
+                edt_studentID.setText("");
                 JOptionPane.showMessageDialog(null, "Đã có lỗi xảy ra, xin vui lòng thử lại!");
             }
         }
@@ -357,10 +370,13 @@ public class StudentTabs extends javax.swing.JPanel {
             return;
         }
         String studentID = edt_studentID.getText();
-        if(studentID.length() < 7) {
-            JOptionPane.showMessageDialog(null, "Mã số sinh viên không hợp lệ!");
+        String classID = (String) class_select_box.getSelectedItem();
+        String subjectID = (String) subject_select_box.getSelectedItem();
+        if(studentID.length() < 7 || classID == null || subjectID == null || classID.length() == 0 || subjectID.length() ==0) {
+            JOptionPane.showMessageDialog(null, "Dữ liệu không hợp lệ!");
             return;
         }
+
         loading = true;
         edt_studentID.setEditable(false);
         ClassLoader cldr = this.getClass().getClassLoader();

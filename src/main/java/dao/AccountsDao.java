@@ -119,6 +119,7 @@ public class AccountsDao {
             return "Thay đổi mật khẩu thành công!";
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+            accountSession.close();
         }
         return "Đã có lỗi xảy ra";
     }

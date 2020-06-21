@@ -6,10 +6,12 @@
 package swing;
 import swing.Dialog.AddStudent;
 import dao.ClassesDao;
-import java.awt.Dialog;
-import java.awt.Dimension;
+
+import java.awt.*;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +34,14 @@ public class ClassTabs extends JPanel {
                         "Họ tên",
                         "Giới tính",
                         "CMND"};
+    Container f = this;
+    boolean loading = false;
     /**
      * Creates new form ClassTabs
      */
     public ClassTabs() {
         initComponents();
-        
-        initSelectBoxData();
-                
-        // initTableData();
-        
+
         loading_conponent.setVisible(false);
 
 
@@ -58,13 +58,20 @@ public class ClassTabs extends JPanel {
                 return canEdit [columnIndex];
             }
         });
-        
+    }
+
+    public void initdata() {
+        initSelectBoxData();
         initTableData();
     }
     
     
     void initSelectBoxData() {
         classesName = classesDao.getListClass();
+        if(classesName == null || classesName.size() ==0) {
+            class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{""}));
+            subject_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{""}));
+        }
         String[] name = new String[classesName.size()];
         for (int i = 0; i < classesName.size(); i++) {
             name[i] = classesName.get(i).getClassId();
@@ -85,6 +92,10 @@ public class ClassTabs extends JPanel {
             try
             { 
                String selectedClass = (String) class_select_box.getSelectedItem();
+               if(selectedClass == null) {
+                   loading_conponent.setVisible(false);
+                   return;
+               }
                 String selectedSubject = (String) subject_select_box.getSelectedItem();
                 List<StudentsEntity> classData;
                 if(selectedSubject.equals("")) {
@@ -94,7 +105,9 @@ public class ClassTabs extends JPanel {
                     classData = classesDao.danhsachmon(selectedClass, selectedSubject);
                 }
 
-
+                if(classData == null || classData.size() == 0) {
+                    return;
+                }
 
                 Object[][] data = new Object[classData.size()][columnNames.length];
 
@@ -125,19 +138,19 @@ public class ClassTabs extends JPanel {
 
                 });
                 loading_conponent.setVisible(false);
-
             } 
             catch (Exception e) 
-            { 
+            {
+                e.printStackTrace();
                 // Throwing an exception 
-                System.out.println ("Exception is caught"); 
+                loading_conponent.setVisible(false);
+                JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đã xảy ra lỗi, xin vui lỏng thử lại sau!");
             } 
         } 
     }
     
     void initTableData() {
         loading_conponent.setVisible(true);
-        
         GetTableData getTableData = new GetTableData();
         getTableData.start();
        
@@ -191,7 +204,6 @@ public class ClassTabs extends JPanel {
 
         AddStudentDialog.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         AddStudentDialog.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-        AddStudentDialog.setPreferredSize(new java.awt.Dimension(500, 680));
         AddStudentDialog.setResizable(false);
 
         jPanel11.setLayout(new java.awt.BorderLayout());
@@ -561,9 +573,9 @@ public class ClassTabs extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
-                    .addComponent(jButton2)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(loading_conponent)))
                 .addContainerGap())
         );
@@ -576,13 +588,17 @@ public class ClassTabs extends JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addGap(13, 13, 13)
-                .addComponent(loading_conponent, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton2)
+                    .addComponent(loading_conponent, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void class_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_class_select_boxActionPerformed
+        if(((String) class_select_box.getSelectedItem()).equals("")) {
+            return;
+        }
         List<SubjectsEntity> list2 = classesDao.getListSubject((String) class_select_box.getSelectedItem());
         String[] subject = new String[list2.size() + 1];
         subject[0] = "";
@@ -597,23 +613,43 @@ public class ClassTabs extends JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        int result;
-        result = fileChooser.showOpenDialog(evt.getComponent().getParent());
-        if (result == JFileChooser.APPROVE_OPTION) {
-        // user selects a file
-            File selectedFile = fileChooser.getSelectedFile();
-            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-            String info = classesDao.importClasses(selectedFile.getAbsolutePath(), ",");
-            if(info.equals(ClassesDao.CLASSES_SUCCESS)) {
-                initSelectBoxData();
-                initTableData();
+    class ImportDate extends Thread {
+        public void run (){
+            try {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                int result;
+                result = fileChooser.showOpenDialog(f.getParent());
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // user selects a file
+                    File selectedFile = fileChooser.getSelectedFile();
+                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                    String info = classesDao.importClasses(selectedFile.getAbsolutePath(), ",");
+                    if(info.equals(ClassesDao.CLASSES_SUCCESS)) {
+                        initdata();
+                    }
+                    JOptionPane.showMessageDialog(f.getParent(), info);
+                }
+                jButton1.setIcon(null);
+                loading = false;
+
+            }catch (Exception e) {
+                e.printStackTrace();
+                jButton1.setIcon(null);
+                loading = false;
+                JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đã xảy ra lỗi, xin vui lỏng thử lại sau!");
             }
-            JOptionPane.showMessageDialog(evt.getComponent().getParent(), info);
-            
         }
+    }
+
+    private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
+        ClassLoader cldr = this.getClass().getClassLoader();
+        java.net.URL imageURL   = cldr.getResource("Rolling-1s-24px.gif");
+        ImageIcon img = new ImageIcon(imageURL);
+        jButton1.setIcon(img);
+        loading = true;
+        ImportDate importDate = new ImportDate();
+        importDate.start();
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -627,12 +663,20 @@ public class ClassTabs extends JPanel {
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         // TODO add your handling code here:
+        if(loading) return;
         AddStudent addStudent = new AddStudent();
         addStudent.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         addStudent.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         addStudent.setSize(new Dimension(447, 639));
         addStudent.setLocationRelativeTo(evt.getComponent().getParent());
         addStudent.setVisible(true);
+        addStudent.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosed(WindowEvent e)
+            {
+                initdata();
+            }
+        });
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -647,9 +691,6 @@ public class ClassTabs extends JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
-    public void openFileChooser() {
-       
-    }
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -660,18 +701,12 @@ public class ClassTabs extends JPanel {
     private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -686,16 +721,8 @@ public class ClassTabs extends JPanel {
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;

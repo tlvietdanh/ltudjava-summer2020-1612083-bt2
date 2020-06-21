@@ -7,12 +7,13 @@ package swing;
 
 import dao.ClassesDao;
 import dao.SchedulesDao;
+
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
+
 import model.ClassesEntity;
 import model.SchedulesEntity;
 import model.StudentsEntity;
@@ -25,69 +26,99 @@ import model.SubjectsEntity;
 public class ScheduleTabs extends javax.swing.JPanel {
 
     ClassesDao classesDao = new ClassesDao();
-    List<SchedulesEntity> classesName;
+    List<ClassesEntity> classesName;
     SchedulesDao schedulesDao = new SchedulesDao();
-    
+    String[] columnNames = {"STT",
+            "Mã môn",
+            "Tên môn",
+            "Phòng học",
+    };
+    boolean loading = false;
+    Container f = this;
     /**
      * Creates new form ClassTabs
      */
     public ScheduleTabs() {
         initComponents();
+        Object[][] data = new Object[0][columnNames.length];
+        loading_conponent.setVisible(false);
+        table_schedule.setModel(new javax.swing.table.DefaultTableModel(
+                data,
+                columnNames
+        ) {
+            boolean[] canEdit = new boolean [] {
+                    false, false, false, false
+            };
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+    }
+
+    public void initData() {
         initSelectBoxData();
-        String selectedString = (String) class_select_box.getSelectedItem();
-        initTableData(selectedString);
+        initTableData();
     }
     
     void initSelectBoxData() {
-        classesName = schedulesDao.getListClass();
+        classesName = classesDao.getListClass();
+        if(classesName == null || classesName.size() == 0) {
+            class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{""}));
+            return;
+        }
         String[] name = new String[classesName.size()];
         for (int i = 0; i < classesName.size(); i++) {
             name[i] = classesName.get(i).getClassId();
         }
         class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(name));
     }
+
+    class GetTable extends Thread {
+        public void run() {
+            try {
+                String selectedString = (String) class_select_box.getSelectedItem();
+                List<SubjectsEntity> classData = schedulesDao.getSchedule(selectedString);
+                if(classData == null) {
+                    classData = new ArrayList<>();
+                }
+
+                Object[][] data = new Object[classData.size()][columnNames.length];
+
+                for (int i = 0; i < classData.size(); i++) {
+                    SubjectsEntity s = classData.get(i);
+                    data[i][0] = i + 1;
+                    data[i][1] = s.getSubjectId();
+                    data[i][2] = s.getName();
+                    data[i][3] = s.getRoom();
+                }
+
+                table_schedule.setModel(new javax.swing.table.DefaultTableModel(
+                        data,
+                        columnNames
+                ){
+                    boolean[] canEdit = new boolean [] {
+                            false, false, false, false
+                    };
+                    public boolean isCellEditable(int rowIndex, int columnIndex) {
+                        return canEdit [columnIndex];
+                    }
+                });
+                loading_conponent.setVisible(false);
+            }catch (Exception e) {
+                e.printStackTrace();
+                loading_conponent.setVisible(false);
+                JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đã xảy ra lỗi, xin vui lỏng thử lại sau!");
+            }
+        }
+    }
     
-    void initTableData(String selectedClass) {
-        
-        
-        List<SubjectsEntity> classData = schedulesDao.getSchedule(selectedClass);
-        if(classData == null) {
-            classData = new ArrayList<>();
-        }
-        
-        String[] columnNames = {"STT",
-                        "Mã môn",
-                        "Tên môn",
-                        "Phòng học",
-                        };
-        
-        Object[][] data = new Object[classData.size()][columnNames.length];
-        
-        for (int i = 0; i < classData.size(); i++) {
-            SubjectsEntity s = classData.get(i);
-            data[i][0] = i + 1;
-            data[i][1] = s.getSubjectId();
-            data[i][2] = s.getName();
-            data[i][3] = s.getRoom();
-        }
-                
-        table_schedule.setModel(new javax.swing.table.DefaultTableModel(
-            data,
-            columnNames
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
+    void initTableData() {
+        String selectedString = (String) class_select_box.getSelectedItem();
+        if(selectedString == null || selectedString.equals("")) return;
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-            
-            public boolean isResizeable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-
-        });
+        loading_conponent.setVisible(true);
+        GetTable getTable = new GetTable();
+        getTable.start();
     }
 
     /**
@@ -108,6 +139,7 @@ public class ScheduleTabs extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         class_select_box = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
+        loading_conponent = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(900, 650));
 
@@ -189,6 +221,8 @@ public class ScheduleTabs extends javax.swing.JPanel {
                 .addComponent(jLabel2))
         );
 
+        loading_conponent.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Rolling-1s-32px.gif"))); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -197,7 +231,11 @@ public class ScheduleTabs extends javax.swing.JPanel {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(loading_conponent)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -208,6 +246,8 @@ public class ScheduleTabs extends javax.swing.JPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(loading_conponent, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -215,30 +255,50 @@ public class ScheduleTabs extends javax.swing.JPanel {
     private void class_select_boxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_class_select_boxActionPerformed
         // TODO add your handling code here:
         JComboBox cb = (JComboBox)evt.getSource();
-        String selectedClass = (String)cb.getSelectedItem();
-        initTableData(selectedClass);
+        initTableData();
     }//GEN-LAST:event_class_select_boxActionPerformed
+
+    class ImportDate extends Thread {
+        public void run (){
+            try {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                int result;
+                result = fileChooser.showOpenDialog(f.getParent());
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    // user selects a file
+                    File selectedFile = fileChooser.getSelectedFile();
+                    System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                    String info = schedulesDao.importSchedule(selectedFile.getAbsolutePath(), ",");
+                    if(info.equals(SchedulesDao.SCHEDULE_SUCCESS)) {
+                        initData();
+                    }
+                    JOptionPane.showMessageDialog(f.getParent(), info);
+                }
+                jButton1.setIcon(null);
+                loading = false;
+
+            }catch (Exception e) {
+                e.printStackTrace();
+                jButton1.setIcon(null);
+                loading = false;
+                JOptionPane.showMessageDialog(f.getParent(), "Hệ thống đã xảy ra lỗi, xin vui lỏng thử lại sau!");
+            }
+        }
+    }
+
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        int result;
-        result = fileChooser.showOpenDialog(evt.getComponent().getParent());
-        if (result == JFileChooser.APPROVE_OPTION) {
-            // user selects a file
-            File selectedFile = fileChooser.getSelectedFile();
-            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-            String info = schedulesDao.importSchedule(selectedFile.getAbsolutePath(), ",");
-            if(info.equals(SchedulesDao.SCHEDULE_SUCCESS)) {
-                initSelectBoxData();
+        ClassLoader cldr = this.getClass().getClassLoader();
+        java.net.URL imageURL   = cldr.getResource("Rolling-1s-24px.gif");
+        ImageIcon img = new ImageIcon(imageURL);
+        jButton1.setIcon(img);
+        loading = true;
+        ImportDate importDate = new ImportDate();
+        importDate.start();
 
-                String selectedClass = (String) class_select_box.getSelectedItem();
 
-                initTableData(selectedClass);
-            }
-            JOptionPane.showMessageDialog(evt.getComponent().getParent(), info);
-        }
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -255,6 +315,7 @@ public class ScheduleTabs extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JLabel loading_conponent;
     private javax.swing.JTable table_schedule;
     // End of variables declaration//GEN-END:variables
 }

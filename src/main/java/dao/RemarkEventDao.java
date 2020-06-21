@@ -24,7 +24,7 @@ public class RemarkEventDao {
             Date start = formater.parse(startDate);
             Date end = formater.parse(endDate);
 
-            if(start.compareTo(end) == 1 ) {
+            if(start.compareTo(end) >= 0 ) {
                 System.out.println("Invalid Date");
                 return "Dữ liệu không hợp lệ!";
             }

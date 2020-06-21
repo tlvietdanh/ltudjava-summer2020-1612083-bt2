@@ -4,6 +4,8 @@ package org.example;/*
  * and open the template in the editor.
  */
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import swing.Student.StudentDashBoard;
 import swing.TeacherDashBoard;
 import swing.login.Login;
@@ -11,11 +13,15 @@ import swing.login.Login;
 public class Controller {
 
 
-
+    
     public static User user = null;
     private static TeacherDashBoard teacherDashBoard;
     private static StudentDashBoard studentDashBoard;
     private static Login login;
+    public static boolean loading = false;
+    public static JButton button;
+    
+    
     public static void handleLogin() {
 
         if(user == null) {
@@ -33,6 +39,8 @@ public class Controller {
         else if(user.userType == 1){
             teacherDashBoard = new TeacherDashBoard();
             teacherDashBoard.setVisible(true);
+            button.setIcon(null);
+
             if(login!=null) {
                 login.setVisible(false);
                 login.dispose();
@@ -45,6 +53,7 @@ public class Controller {
         else {
             studentDashBoard = new StudentDashBoard();
             studentDashBoard.setVisible(true);
+            button.setIcon(null);
             if(login!=null) {
                 login.setVisible(false);
                 login.dispose();

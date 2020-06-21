@@ -33,6 +33,10 @@ public class AddStudent extends javax.swing.JDialog {
     
     void initSelectBoxData() {
         List<ClassesEntity> classesName = classesDao.getListClass();
+        if(classesName == null || classesName.size() == 0) {
+            class_select_box.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{""}));
+            return;
+        }
         String[] name = new String[classesName.size()];
         for (int i = 0; i < classesName.size(); i++) {
             name[i] = classesName.get(i).getClassId();
@@ -233,12 +237,22 @@ public class AddStudent extends javax.swing.JDialog {
                 sb_femaleMouseClicked(evt);
             }
         });
+        sb_female.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sb_femaleActionPerformed(evt);
+            }
+        });
 
         sb_male.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         sb_male.setText("Nam");
         sb_male.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 sb_maleMouseClicked(evt);
+            }
+        });
+        sb_male.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sb_maleActionPerformed(evt);
             }
         });
 
@@ -383,7 +397,8 @@ public class AddStudent extends javax.swing.JDialog {
         String mssv = edt_mssv.getText();
         String name = edt_name.getText();
         String cmnd = edt_cmnd.getText();
-        if(mssv.length() < 7 || name.length() == 0 || cmnd.length() == 0) {
+        String classID = (String) class_select_box.getSelectedItem();
+        if(mssv.length() < 7 || name.length() == 0 || cmnd.length() == 0 || classID.equals("")) {
             JOptionPane.showMessageDialog(evt.getComponent().getParent().getParent(), "Dữ liệu không hợp lệ!");
             return;
         }
@@ -402,14 +417,24 @@ public class AddStudent extends javax.swing.JDialog {
     private void sb_maleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sb_maleMouseClicked
         // TODO add your handling code here:
         sb_female.setSelected(false);
-        sb_male.setSelected(true);
     }//GEN-LAST:event_sb_maleMouseClicked
 
     private void sb_femaleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sb_femaleMouseClicked
         // TODO add your handling code here:
-        sb_female.setSelected(true);
         sb_male.setSelected(false);
     }//GEN-LAST:event_sb_femaleMouseClicked
+
+    private void sb_maleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sb_maleActionPerformed
+        // TODO add your handling code here:
+        sb_female.setSelected(false);
+
+    }//GEN-LAST:event_sb_maleActionPerformed
+
+    private void sb_femaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sb_femaleActionPerformed
+        // TODO add your handling code here:
+        sb_male.setSelected(false);
+
+    }//GEN-LAST:event_sb_femaleActionPerformed
 
 
 
